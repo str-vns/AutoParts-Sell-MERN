@@ -1,0 +1,87 @@
+[
+    {
+        "name": "High-Performance Car Battery",
+        "price": 85.99,
+        "description": "Upgrade your vehicle's power source with this high-performance car battery. Designed for reliability and durability, this battery will ensure your vehicle starts every time. Whether you drive a compact car or a large truck, this battery is suitable for various vehicle types. It provides consistent power and long life, even in extreme conditions.",
+        "ratings": 4.7,
+        "images": [
+            {
+                "public_id": "products/rtkt3w3cd87dxxpom4h5",
+                "url": "https://res.cloudinary.com/diljhwf3a/image/upload/v1698478475/products/rtkt3w3cd87dxxpom4h5.jpg"
+            }
+        ],
+        "category": "Battery",
+        "seller": "AutoParts Store",
+        "stock": 100,
+        "numOfReviews": 22,
+        "reviews": []
+    },
+    {
+        "name": "Performance Turbocharger Kit",
+        "price": 349.99,
+        "description": "Boost your vehicle's horsepower and torque with this high-performance turbocharger kit. This kit includes a high-quality turbocharger, intercooler, and all necessary components for installation. It's perfect for enthusiasts looking to enhance their vehicle's power and performance.",
+        "ratings": 4.9,
+        "images": [
+            {
+                "public_id": "products/rtkt3w3cd87dxxpom4h5",
+                "url": "https://res.cloudinary.com/diljhwf3a/image/upload/v1698478475/products/rtkt3w3cd87dxxpom4h5.jpg"
+            }
+        ],
+        "category": "Turbo",
+        "seller": "TurboSpeed Shop",
+        "stock": 50,
+        "numOfReviews": 15,
+        "reviews": []
+    },
+    {
+        "name": "High-Performance Brake Pad Set",
+        "price": 49.99,
+        "description": "Upgrade your vehicle's braking performance with this high-quality brake pad set. These brake pads are designed for improved stopping power, reduced brake fade, and longer pad life. They are compatible with various vehicle makes and models.",
+        "ratings": 4.6,
+        "images": [
+            {
+                "public_id": "products/rtkt3w3cd87dxxpom4h5",
+                "url": "https://res.cloudinary.com/diljhwf3a/image/upload/v1698478475/products/rtkt3w3cd87dxxpom4h5.jpg"
+            }
+        ],
+        "category": "Brake",
+        "seller": "BrakePro Shop",
+        "stock": 75,
+        "numOfReviews": 18,
+        "reviews": []
+    },
+    {
+        "name": "Performance Car Suspension Kit",
+        "price": 299.99,
+        "description": "Enhance your vehicle's handling and ride quality with this performance car suspension kit. The kit includes high-quality shocks, struts, and springs designed to provide improved cornering and reduced body roll. Perfect for enthusiasts seeking a sportier driving experience.",
+        "ratings": 4.8,
+        "images": [
+            {
+                "public_id": "products/rtkt3w3cd87dxxpom4h5",
+                "url": "https://res.cloudinary.com/diljhwf3a/image/upload/v1698478475/products/rtkt3w3cd87dxxpom4h5.jpg"
+            }
+        ],
+        "category": "Car Suspension",
+        "seller": "SuspensionMaster",
+        "stock": 40,
+        "numOfReviews": 12,
+        "reviews": []
+    },
+    {
+        "name": "High-Flow Air Filter",
+        "price": 24.99,
+        "description": "Improve your vehicle's air intake and engine performance with this high-flow air filter. Designed to increase airflow and filtration efficiency, this air filter ensures your engine receives clean and abundant air. It's compatible with a wide range of vehicle models.",
+        "ratings": 4.5,
+        "images": [
+            {
+                "public_id": "products/rtkt3w3cd87dxxpom4h5",
+                "url": "https://res.cloudinary.com/diljhwf3a/image/upload/v1698478475/products/rtkt3w3cd87dxxpom4h5.jpg"
+            }
+        ],
+        "category": "Air Filter",
+        "seller": "AirFlow Performance",
+        "stock": 60,
+        "numOfReviews": 20,
+        "reviews": []
+    }
+]
