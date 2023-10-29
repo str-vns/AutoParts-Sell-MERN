@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const cookieParser = require('coolie-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 
