@@ -41,7 +41,7 @@ class APIFeatures
     const currentPage = Number(this.queryStringy.page) || 1;
     const skip = PerPage * (currentPage - 1);
     this.query = this.query.limit(PerPage).skip(skip);
-    return thisl
+    return this
    }
 }
 
