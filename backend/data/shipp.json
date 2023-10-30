@@ -1,0 +1,19 @@
+[
+    {
+        "user_id": "653f3383d356f35666a8dca2" ,
+        "address": "123 Main Street",
+        "city": "simmco",
+        "phoneNo": "123-456-7890",
+        "postalCode": "12345",
+        "country": "achi"
+    },
+    {
+        "user_id": "653f3383d356f35666a8dca2" ,
+        "address": "23 Main Street",
+        "city": "alo",
+        "phoneNo": "123-456-546",
+        "postalCode": "12345",
+        "country": "east"
+    }
+    
+]

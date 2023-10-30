@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const shippingModel = mongoose.Schema
 (
     {
-        user: {
+        user_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true,
@@ -28,6 +28,10 @@ const shippingModel = mongoose.Schema
             type: String,
             required: true,
         },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+          },
     }
 )
 
