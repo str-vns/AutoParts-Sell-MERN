@@ -62,10 +62,11 @@ exports.newProducts = async (req, res, next) => {
 		images = req.body.images
 	}
 
-	let imagingLinks = [];
+	let imagesLinks = [];
 
 	for (let i = 0; i < images.length; i++) {
 		let imageDataUri = images[i]
+		// console.log(imageDataUri)
 		try {
 			const result = await cloudinary.v2.uploader.upload(`${imageDataUri}`, {
 				folder: 'products',
@@ -84,19 +85,19 @@ exports.newProducts = async (req, res, next) => {
 
 	}
 
-	req.body.images = imagingLinks
-  req.body.user = req.user.id;
+	req.body.images = imagesLinks
+	req.body.user = req.user.id;
 
-  const products = await products.create(req.body);
-  if(!products)
-  return res.status(400).json({
-    success: false,
-    message: 'Product not created'
-})
-  res.status(201).json({
-    success: true,
-    products,
-  });
+	const product = await Product.create(req.body);
+	if (!product)
+		return res.status(400).json({
+			success: false,
+			message: 'Product not created'
+		})
+	res.status(201).json({
+		success: true,
+		product
+	})
 };
 
 // READ ADMIN
@@ -119,7 +120,7 @@ exports.getAdminproducts = async (req, res, next) => {
 exports.updateProducts = async (req,res,next) =>
 {
     let products = await Product.findById(req.params.id);
-    if(!product)
+    if(!products)
     {
         return res.status(404).json
         ({
@@ -141,9 +142,9 @@ exports.updateProducts = async (req,res,next) =>
 
     if(images !== undefined)
     {
-        for(let i = 0; i < product.images.length; i++)
+        for(let i = 0; i < Product.images.length; i++)
         {
-            const output =  await cloudinary.v2.uploader.destroy(product.images[i].public_id)
+            const output =  await cloudinary.v2.uploader.destroy(Product.images[i].public_id)
         }
     }
     let imagingLinks = [];
@@ -160,14 +161,14 @@ exports.updateProducts = async (req,res,next) =>
         })
     }
     req.body.images = imagingLinks;
-    product = await Product.findByIdAndUpdate(req.params.id, req.body,
+    products = await Product.findByIdAndUpdate(req.params.id, req.body,
         {
             new: true,
             runValidators: true,
             useFindAndModify: false
         })
         
-        if(!product)
+        if(!products)
         {
             return res.status(404).json
             ({
@@ -177,7 +178,7 @@ exports.updateProducts = async (req,res,next) =>
         }
         res.status(200).json({
             success: true,
-            product
+            products
         })
 }
 
@@ -186,7 +187,7 @@ exports.deleteProducts = async (req,res,next)=>
 {
     const products = await Product.findByIdAndDelete(req.params.id);
      
-    if(!product)
+    if(!products)
     {
         return res.status(404).json
         ({
