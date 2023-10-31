@@ -14,6 +14,7 @@
         "seller": "AutoParts Store",
         "stock": 100,
         "numOfReviews": 22,
+        "user": "653f3383d356f35666a8dca2",
         "reviews": []
     },
     {
@@ -31,6 +32,7 @@
         "seller": "TurboSpeed Shop",
         "stock": 50,
         "numOfReviews": 15,
+        "user": "653f3383d356f35666a8dca2",
         "reviews": []
     },
     {
@@ -48,6 +50,7 @@
         "seller": "BrakePro Shop",
         "stock": 75,
         "numOfReviews": 18,
+        "user": "653f3383d356f35666a8dca2",
         "reviews": []
     },
     {
@@ -65,6 +68,7 @@
         "seller": "SuspensionMaster",
         "stock": 40,
         "numOfReviews": 12,
+        "user": "653f3383d356f35666a8dca2",
         "reviews": []
     },
     {
@@ -82,6 +86,7 @@
         "seller": "AirFlow Performance",
         "stock": 60,
         "numOfReviews": 20,
+        "user": "653f3383d356f35666a8dca2",
         "reviews": []
     }
 ]

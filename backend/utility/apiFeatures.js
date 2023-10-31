@@ -1,48 +1,47 @@
-class APIFeatures
-{
-   constructor(query, queryStringy)
-   {
-    this.query = query;
-    this.queryStringy = queryStringy;
-   }
-
-   search()
-   {
-    console.log(this.queryStringy)
-    const keyword = this.queryStringy.keyword ? {
-    name:
-    {
-        $reyex: req.queryStringy.keyword,
-        $options: 'i'
+class APIFeatures {
+    constructor(query, queryStr) {
+        this.query = query;
+        this.queryStr = queryStr;
     }
-   } : {}
-   console.log(this.queryStringy,keyword, this.query);
-   this.query = this.query.find({...keyword});
-   return this;
-   }
+    //http://localhost:4001/api/v1/products?keyword=usb&page=2
 
-   filter()
-   {
-    const queryCopy = { ...this.queryStringy};
-    const removeFields = ['keyword', 'limit', 'page']
-    removeFields.forEach(el => delete queryCopy[el]);
+    search() {
+        console.log(this.queryStr)
+        const keyword = this.queryStr.keyword ? {
+            name: {
+                $regex: this.queryStr.keyword,
+                $options: 'i'
+            }
+        } : {}
+        console.log(this.queryStr, keyword, this.query);
+        this.query = this.query.find({ ...keyword });
+        return this;
+    }
 
-    let queryStringy = JSON.stringify(queryCopy);
-    console.log(queryStringy);
-    queryStringy = queryStringy.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
-    console.log(JSON.parse(queryStringy));
-    this.query = this.query.find(JSON.parse(queryStringy));
+    filter() {
 
-    return this;
-   }
+        const queryCopy = { ...this.queryStr };
+        // console.log(queryCopy);
+        // Removing fields from the query
+        const removeFields = ['keyword', 'limit', 'page']
+        removeFields.forEach(el => delete queryCopy[el]);
 
-   pagination(PerPage)
-   {
-    const currentPage = Number(this.queryStringy.page) || 1;
-    const skip = PerPage * (currentPage - 1);
-    this.query = this.query.limit(PerPage).skip(skip);
-    return this
-   }
+        // // Advance filter for price, ratings etc
+        let queryStr = JSON.stringify(queryCopy);
+        console.log(queryStr);
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
+        console.log(JSON.parse(queryStr));
+        this.query = this.query.find(JSON.parse(queryStr));
+        // console.log(JSON.parse(queryStr));
+        return this;
+    }
+
+    pagination(resPerPage) {
+        const currentPage = Number(this.queryStr.page) || 1;
+        const skip = resPerPage * (currentPage - 1);
+
+        this.query = this.query.limit(resPerPage).skip(skip);
+        return this;
+    }
 }
-
-module.exports = APIFeatures;
+module.exports = APIFeatures
