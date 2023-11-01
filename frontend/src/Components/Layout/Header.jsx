@@ -3,13 +3,13 @@ import React from 'react'
 import Search from './Search'
 const Header = () => {
   return (
-    <header className="bg-white">
+    <header className="bg-white border-2 border-b-black">
   <div
     className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8"
   >
     <a className=" inline-block text-teal-600" href="/">
     <div className="flex items-center">
-    <img src="./images/garage_10725666.png" className="h-10 w-10" alt="OnGarage Logo" />
+    <img src="./images/garage_10725666.png" className="h-10 w-10 " alt="OnGarage Logo" />
     <h3 className="ml-2 text-2xl">OnGarage</h3>
   </div>
     </a>
@@ -55,11 +55,11 @@ const Header = () => {
         </ul>
       </nav>
 
-
-
+   
       <div className="flex items-center gap-4">
-      <Search />
+
         <div className="sm:flex sm:gap-4">
+     <a><Search/> </a>
           <a
             className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
             href="/"
@@ -67,12 +67,7 @@ const Header = () => {
             Login
           </a>
 
-          <a
-            className="hidden rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 transition hover:text-teal-600/75 sm:block"
-            href="/"
-          >
-            Register
-          </a>
+         
         </div>
 
         <button
