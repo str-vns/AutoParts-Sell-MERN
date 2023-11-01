@@ -6,7 +6,7 @@ const cloudinary = require("cloudinary");
 // UserParts
 // READ
 exports.getproducts = async (req, res, next) => {
-    const resPerPage = 6;
+    const resPerPage = 8;
 	const productsCount = await Product.countDocuments();
 	const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter()
 	apiFeatures.pagination(resPerPage);

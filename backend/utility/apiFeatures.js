@@ -3,7 +3,7 @@ class APIFeatures {
         this.query = query;
         this.queryStr = queryStr;
     }
-    //http://localhost:4001/api/v1/products?keyword=usb&page=2
+
 
     search() {
         console.log(this.queryStr)
@@ -21,18 +21,17 @@ class APIFeatures {
     filter() {
 
         const queryCopy = { ...this.queryStr };
-        // console.log(queryCopy);
-        // Removing fields from the query
+
         const removeFields = ['keyword', 'limit', 'page']
         removeFields.forEach(el => delete queryCopy[el]);
 
-        // // Advance filter for price, ratings etc
+
         let queryStr = JSON.stringify(queryCopy);
         console.log(queryStr);
         queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
         console.log(JSON.parse(queryStr));
         this.query = this.query.find(JSON.parse(queryStr));
-        // console.log(JSON.parse(queryStr));
+
         return this;
     }
 
