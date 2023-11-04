@@ -41,7 +41,8 @@ const userModel = new mongoose.Schema({
         default: Date.now
     },
     resetPasswordToken: String,
-    resetPasswordExpire: Date
+    resetPasswordExpire: Date,
+
 })
 
 userModel.pre('save', async function (next) {

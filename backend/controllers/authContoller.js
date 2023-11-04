@@ -4,37 +4,40 @@ const sEmail = require("../utility/sendEmail");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary");
 
-exports.UserRegistery = async (req,res, next) =>
-{
-    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-        folder: 'avatars',
-        width: 150,
-        crop: "scale"
-    }, (err, res) => {
-        console.log(err, res);
-    });
-    const { name, email, password, role } = req.body;
-    const user = await User.create({
-        name,
-        email,
-        password,
-        avatar: {
-            public_id: result.public_id,
-            url: result.secure_url
-        },
-        // role
+  exports.registerUser = async (req, res, next) => {
+    try {
+        // Check if file was uploaded
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'Missing required parameter - file' });
+        }
 
-    })
+        const result = await cloudinary.v2.uploader.upload(req.file.path, {
+            folder: 'avatars',
+            width: 150,
+            crop: "scale"
+        });
 
-    // const token = user.getJwtToken();
+        const { name, email, password, role } = req.body;
 
-    if (!user) {
-        return res.status(500).json({
-            success: false,
-            message: 'user not created'
-        })
+        const user = await User.create({
+            name,
+            email,
+            password,
+            avatar:  result ?  {
+                public_id: result.public_id,
+                url: result.secure_url
+            } : {
+                public_id: 'default',
+                url: '/images/default_avatar.jpg'
+            },
+            // role,
+        });
+
+        sendToken(user, 200, res);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server Error' });
     }
-    sendToken(user, 200, res)
 }
 
 exports.UserLogin =  async (req, res, next ) =>
@@ -84,7 +87,7 @@ exports.forgotPassword = async (req, res, next) => {
     }
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
-    const resetUrl = `${req.protocol}://localhost:3000/password/reset/${resetToken}`;
+    const resetUrl = `${req.protocol}://localhost:5173/password/reset/${resetToken}`;
     const message = `Your password reset token is as follow:\n\n${resetUrl}\n\nIf you have not requested this email, then ignore it.`
     try {
         await sendEmail({

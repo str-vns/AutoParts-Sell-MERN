@@ -1,10 +1,13 @@
 const express = require('express');
+const passport = require('passport')
 const router = express.Router();
 const upload = require('../utility/multer');
-const { UserRegistery, UserLogin, UserLogout, allUsers, getUserDetails, getUserProfile, updatePassword, resetPassword, forgotPassword, updateProfile } = require('../controllers/authContoller');
+const { registerUser, UserLogin, UserLogout, allUsers, getUserDetails, getUserProfile, updatePassword, resetPassword, forgotPassword, updateProfile } = require('../controllers/authContoller');
 
 //user
-router.post('/register', upload.single("avatar"), UserRegistery);
+
+
+router.post('/register', upload.single("avatar"), registerUser);
 router.post('/login', UserLogin)
 router.get('/logout', UserLogout)
 router.post('/password/forgot', forgotPassword);
