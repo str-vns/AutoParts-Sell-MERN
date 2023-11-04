@@ -100,9 +100,9 @@ const Header = () => {
             </nav>
             <div className="flex items-center gap-4">
               <div className="sm:flex sm:gap-4">
-                <Link to="/">
+               
                   <Search />
-                </Link>
+              
                 {user.name ? (
                   <div className="relative">
                     <div

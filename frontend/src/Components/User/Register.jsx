@@ -48,7 +48,12 @@ const Register = () => {
        toast.error('Name, email, and password are required');
         return;
       }
-      
+
+      if (!avatar) {
+        toast.error('image are required');
+         return;
+       }
+
     if (password !== passwordConfirm) {
       setError("Password does not match");
       toast.error("Password does not match");
