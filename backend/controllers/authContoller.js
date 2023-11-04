@@ -2,7 +2,15 @@ const User = require("../models/user");
 const sendToken = require("../utility/jwtToken");
 const sEmail = require("../utility/sendEmail");
 const crypto = require("crypto");
+const bcrypt = require('bcrypt')
 const cloudinary = require("cloudinary");
+const {google} = require('googleapis')
+const {OAuth2} = google.auth
+const jwt = require('jsonwebtoken');
+
+const client = new OAuth2('1050826465955-mpgi9kopddpq75bacchdjkaeahbqr58e.apps.googleusercontent.com')
+
+
 
   exports.registerUser = async (req, res, next) => {
     try {
@@ -195,6 +203,19 @@ exports.allUsers = async (req, res, next) => {
     })
 }
 
+exports.allUsers  = async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+        return res.status(400).json({ message: `User does not found with id: ${req.params.id}` })
+    }
+
+    res.status(200).json({
+        success: true,
+        user
+    })
+}
+
 exports.getUserDetails = async (req, res, next) => {
     const user = await User.findById(req.params.id);
 
@@ -207,3 +228,51 @@ exports.getUserDetails = async (req, res, next) => {
         user
     })
 }
+
+const createRefreshToken = (payload) => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error('REFRESH_TOKEN_SECRET is not defined');
+    }
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+}
+
+exports.googleLogin = async (req, res) => {
+    try {
+        const { tokenId } = req.body;
+
+        const verify = await client.verifyIdToken({ idToken: tokenId, audience:"1050826465955-mpgi9kopddpq75bacchdjkaeahbqr58e.apps.googleusercontent.com" });
+
+        const { email_verified, email, name, picture } = verify.payload;
+
+        if (!email_verified) return res.status(400).json({ msg: "Email verification failed." });
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            const passwordHash = await bcrypt.hash(email, 12);
+
+            const newUser = new User({
+                name,
+                email,
+                password: passwordHash,
+                avatar: {
+                    public_id: 'default',
+                    url: picture
+                }
+            });
+
+            await newUser.save();
+
+            user = newUser;
+        }
+
+        sendToken(user, 200, res);
+    } catch (err) {
+        console.error(err);
+        if (err.response) {
+            console.error('Response data:', err.response.data);
+            console.error('Response status:', err.response.status);
+        }
+        return res.status(500).json({ msg: err.message });
+    }
+};
