@@ -12,6 +12,7 @@ const clientId = "965475144008-u9mfeqg7399ld09i40faoutoe9l4eibs.apps.googleuserc
 const Header = () => {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
+
   const logoutUser = async () => {
     try {
       await axios.get(`http://localhost:4000/api/v1/logout`);
@@ -21,8 +22,8 @@ const Header = () => {
       toast.error(error.response.data.message);
     }
   };
+
   const onSuccess = async (res) => {
-    
     toast.success(`Logout Success: currentUser: ${JSON.stringify(res.profileObj)}`, {
       position: 'top-right',
     });
@@ -38,7 +39,6 @@ const Header = () => {
   useEffect(() => {
     setUser(getUser());
   }, []);
-
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -103,78 +103,78 @@ const Header = () => {
                
                   <Search />
               
-                {user.name ? (
-                  <div className="relative">
-                    <div
-                      className="inline-flex items-center overflow-hidden rounded-md bg-white"
-                      tabIndex="0"
-                    >
-                      <div className="inline-flex px-5 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700">
-                        <img
-                          alt={user.name}
-                          src={user.avatar && user.avatar.url}
-                          className="h-10 w-10 rounded-full object-cover"
-                        />
-                        <p className="ms-2 hidden text-left text-xs sm:block">
-                          <strong className="block font-medium text-black">
-                            {user.name}
-                          </strong>
-                          <span className="text-gray-500"> {user.email} </span>
-                        </p>
-                      </div>
-                      <button
-                        onClick={toggleDropdown}
-                        className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700 "
-                        tabIndex="-1"
-                      >
-                        <span className="sr-only">Menu</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="1.5"
-                          stroke="currentColor"
-                          className={`h-4 w-4 ${isOpen ? 'group-open:-rotate-180' : ''}`}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                    {isOpen && (
-                      <div
-                        className="absolute end-0 z-10 mt-2 w-56 rounded-md border border-gray-100 bg-white shadow-lg"
-                        role="menu"
-                      >
-                        <div className="p-2" onClick={closeDropdown}>
-                          <Link
-                            className="block rounded-lg px-4 py-2 text-sm text-black hover:bg-gray-50 hover:text-gray-700"
-                            to="/orders/me"
-                          >
-                            Orders
-                          </Link>
-                          <Link
-                            className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                            to="/me"
-                          >
-                            Profile
-                          </Link>
-                          <Link
-                            className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                            to="/"
-                            onClick={logoutHandler}
-                          >
-                            <img src="./images/icons8-logout-64.png" className="w-6" />
-                         
-                            Logout
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  {user.name ? (
+          // Display user's information if the user is logged in
+          <div className="relative">
+            <div
+              className="inline-flex items-center overflow-hidden rounded-md bg-white"
+              tabIndex="0"
+            >
+              <div className="inline-flex px-5 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700">
+                <img
+                  alt={user.name}
+                  src={user.avatar && user.avatar.url}
+                  className="h-10 w-10 rounded-full object-cover"
+                />
+                <p className="ms-2 hidden text-left text-xs sm:block">
+                  <strong className="block font-medium text-black">
+                    {user.name}
+                  </strong>
+                  <span className="text-gray-500"> {user.email} </span>
+                </p>
+              </div>
+              <button
+                onClick={toggleDropdown}
+                className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700 "
+                tabIndex="-1"
+              >
+                <span className="sr-only">Menu</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className={`h-4 w-4 ${isOpen ? 'group-open:-rotate-180' : ''}`}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                  />
+                </svg>
+              </button>
+            </div>
+            {isOpen && (
+              <div
+                className="absolute end-0 z-10 mt-2 w-56 rounded-md border border-gray-100 bg-white shadow-lg"
+                role="menu"
+              >
+                <div className="p-2" onClick={closeDropdown}>
+                  <Link
+                    className="block rounded-lg px-4 py-2 text-sm text-black hover:bg-gray-50 hover:text-gray-700"
+                    to="/orders/me"
+                  >
+                    Orders
+                  </Link>
+                  <Link
+                    className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                    to="/me"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    to="/"
+                    onClick={logoutHandler}
+                  >
+                    <img src="./images/icons8-logout-64.png" className="w-6" />
+                    Logout
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
                 ) : (
                   <Link to="/login" id="login_btn">
                     <a className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700">

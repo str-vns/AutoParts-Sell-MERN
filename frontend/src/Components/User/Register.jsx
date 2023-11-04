@@ -89,16 +89,7 @@ const Register = () => {
     }
   };
 
-  const responseGoogle = (response) => {
-    // Handle the response from Google OAuth here.
-    if (response.error) {
-    
-      console.error(response.error);
-    } else {
-      // Send the `response.tokenId` to your server for verification.
-      // Implement this in the `responseGoogle` function.
-    }
-  };
+
 
   const register = async (userData) => {
     try {

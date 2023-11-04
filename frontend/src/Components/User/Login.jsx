@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useLocation} from 'react-router-dom'
 import Loader from '../Layout/Loader'
 import Metadata from '../Layout/MetaData'
 import { toast } from 'react-toastify'
@@ -7,10 +7,19 @@ import 'react-toastify/dist/ReactToastify.css'
 import axios from 'axios'
 import { authenticate } from '../../Utilitys/helpers'
 import { getUser } from '../../Utilitys/helpers'
-
+import GoogleLogin, { GoogleLogout } from 'react-google-login'
 
 
 const Login = () => {
+
+    const initialState = {
+      email: '',
+      password: '',
+      err: '',
+      success: ''
+    }
+
+  const [user, setUser] = useState(initialState)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading] = useState(false)
@@ -19,6 +28,7 @@ const Login = () => {
   let location = useLocation()
   const redirect = location.search ? new URLSearchParams(location.search).get('redirect') : ''
 
+
   const login = async (email, password) => {
     try {
       const config = {
@@ -26,6 +36,7 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
       }
+   
       const { data } = await axios.post(`http://localhost:4000/api/v1/login`, { email, password }, config)
       console.log(data)
       authenticate(data, () => {
@@ -48,23 +59,41 @@ const Login = () => {
     }
   }
 
-  const onSuccess = async (res) => {
-    console.log('Login Success: currentUser:', res.profileObj);
-    toast.success(`Login Success: currentUser: ${JSON.stringify(res.profileObj)}`, {
-      position: 'top-right',
-    });
-  }
-  const onFailure = (error) => {
-    console.log(error);
-    if (error.error === 'popup_closed_by_user') {
-      // handle error here
-      console.log('User closed the login popup.');
-      toast.error('Login was not completed. Please try again.', {
-        position: 'top-right',
+
+  const responseGoogle = async (response) => {
+    try {
+
+      const { data } = await axios.post('http://localhost:4000/api/v1/google_login', {
+        tokenId: response.tokenId
       });
+      console.log('Received from server:', data.user);
+  
+      // Store the user data in session storage
+      sessionStorage.setItem('user', JSON.stringify(data.user));
+      console.log('Stored in session storage:', JSON.parse(sessionStorage.getItem('user')));
+  
+      authenticate(data, () => {
+        toast.success('Logged in successfully', {
+          position: 'top-right',
+        })
+        navigate('/')
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        console.log('Retrieved from session storage:', user);
+        console.log(user.name, user.email, user.avatar);
+      })
+    } catch (err) {
+    
+      console.error('Error:', err)
+      if (err.response) {
+        console.error('Response Data:', err.response.data)
+      }
+      toast.error('Google Login Failed', {
+        position: 'top-right',
+      })
     }
   }
-  
+
+
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -73,6 +102,7 @@ const Login = () => {
   }
 
   useEffect(() => {
+    
     if (getUser() && redirect === 'shipping') {
       navigate(`/${redirect}`)
     }
@@ -189,8 +219,18 @@ const Login = () => {
                     Sign in
                   </button>
                   
+
                 </div>
               </form>
+
+              <div className='social'>
+              <GoogleLogin
+    clientId="1050826465955-mpgi9kopddpq75bacchdjkaeahbqr58e.apps.googleusercontent.com"
+    buttonText="Login With Google"
+    onSuccess={responseGoogle}
+    cookiePolicy={'single_host_origin'}
+  />,
+              </div>
             </div>
 
             <div className="relative h-64 w-full sm:h-96 lg:h-full lg:w-1/2">
