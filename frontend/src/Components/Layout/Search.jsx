@@ -26,9 +26,9 @@ function Search() {
         />
         
           <button id="search_btn" className="block border  border-black rounded-md bg-white px-2 py-1.5 transition ">
-            <i className="fa fa-search fill-white" aria-hidden="true" >
+            
             <img src="./images/magnifying-glass.gif" className='h-5 w-5'/>
-            </i>
+            
           </button>
         </div>
       </div>

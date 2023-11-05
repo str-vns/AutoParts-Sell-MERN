@@ -57,9 +57,7 @@ const Login = () => {
       toast.error("User or Password is Invalid", {
         position: "top-right",
       });
-      toast.error("Google Login Failed", {
-        position: "top-right",
-      });
+     
     }
   };
 
@@ -271,7 +269,7 @@ const Login = () => {
                     </p>
                     <p className="text-sm text-black py-1 ">
                       You Forgot Password?
-                      <Link to="/register" className=" hover:underline">
+                      <Link to="/password/forgot" className=" hover:underline">
                         {" "}
                         Forgot Password
                       </Link>
