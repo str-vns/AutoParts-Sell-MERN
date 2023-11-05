@@ -16,7 +16,7 @@ const Header = () => {
   const logoutUser = async () => {
     try {
       await axios.get(`http://localhost:4000/api/v1/logout`);
-      setUser({}); // Set user to an empty object after logout
+      setUser({}); 
       logout(() => navigate('/'));
     } catch (error) {
       toast.error(error.response.data.message);

@@ -1,112 +1,160 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation} from 'react-router-dom'
-import Loader from '../Layout/Loader'
-import Metadata from '../Layout/MetaData'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import axios from 'axios'
-import { authenticate } from '../../Utilitys/helpers'
-import { getUser } from '../../Utilitys/helpers'
-import GoogleLogin, { GoogleLogout } from 'react-google-login'
-
+import React, { Fragment, useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import Loader from "../Layout/Loader";
+import Metadata from "../Layout/MetaData";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { authenticate } from "../../Utilitys/helpers";
+import { getUser } from "../../Utilitys/helpers";
+import GoogleLogin from "react-google-login";
+import FacebookLogin from "react-facebook-login";
 
 const Login = () => {
+  const initialState = {
+    email: "",
+    password: "",
+    err: "",
+    success: "",
+  };
 
-    const initialState = {
-      email: '',
-      password: '',
-      err: '',
-      success: ''
-    }
-
-  const [user, setUser] = useState(initialState)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const navigate = useNavigate()
-  let location = useLocation()
-  const redirect = location.search ? new URLSearchParams(location.search).get('redirect') : ''
-
+  const [user, setUser] = useState(initialState);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  let location = useLocation();
+  const redirect = location.search
+    ? new URLSearchParams(location.search).get("redirect")
+    : "";
 
   const login = async (email, password) => {
     try {
       const config = {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-      }
-   
-      const { data } = await axios.post(`http://localhost:4000/api/v1/login`, { email, password }, config)
-      console.log(data)
+      };
+
+      const { data } = await axios.post(
+        `http://localhost:4000/api/v1/login`,
+        { email, password },
+        config
+      );
+      console.log(data);
       authenticate(data, () => {
-        toast.success('Logged in successfully', {
-          position: 'top-right',
-        })
-        navigate('/')
-      })
+        toast.success("Logged in successfully", {
+          position: "top-right",
+        });
+        navigate("/");
+      });
     } catch (error) {
-      console.error('Error:', error)
+      console.error("Error:", error);
       if (error.response) {
-        console.error('Response Data:', error.response.data)
+        console.error("Response Data:", error.response.data);
       }
-      toast.error('User or Password is Invalid', {
-        position: 'top-right',
-      })
-      toast.error('Google Login Failed', {
-      position: 'top-right',
-    })
+      toast.error("User or Password is Invalid", {
+        position: "top-right",
+      });
+      toast.error("Google Login Failed", {
+        position: "top-right",
+      });
+    }
+  };
+
+  const responseFacebook = async (response) => {
+    try {
+      console.log(response)
+        
+      const {accessToken, userID} = response
+      const { data } = await axios.post('http://localhost:4000/api/v1/facebook_login', {accessToken, userID})
+  
+      if (data && data.user) {
+        console.log("Received from server:", data.user);
+  
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+  
+        // Retrieve the user data from session storage
+        const userJson = sessionStorage.getItem("user");
+        
+        if (userJson) {
+          const user = JSON.parse(userJson);
+          console.log("Stored in session storage:", user);
+        
+          authenticate(data, () => {
+            toast.success("Logged in successfully", {
+              position: "top-right",
+            });
+            navigate("/");
+            console.log("Retrieved from session storage:", user);
+            console.log(user.name, user.email, user.avatar);
+          });
+        } else {
+          console.error("No user data in session storage");
+        }
+      } else {
+        console.error("No user data in server response");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      if (err.response) {
+        console.error("Response Data:", err.response.data);
+      }
+      toast.error("Facebook Login Failed", {
+        position: "top-right",
+      });
     }
   }
-
-
+  
   const responseGoogle = async (response) => {
     try {
+      const { data } = await axios.post(
+        "http://localhost:4000/api/v1/google_login",
+        {
+          tokenId: response.tokenId,
+        }
+      );
+      console.log("Received from server:", data.user);
 
-      const { data } = await axios.post('http://localhost:4000/api/v1/google_login', {
-        tokenId: response.tokenId
-      });
-      console.log('Received from server:', data.user);
-  
       // Store the user data in session storage
-      sessionStorage.setItem('user', JSON.stringify(data.user));
-      console.log('Stored in session storage:', JSON.parse(sessionStorage.getItem('user')));
-  
+      sessionStorage.setItem("user", JSON.stringify(data.user));
+      console.log(
+        "Stored in session storage:",
+        JSON.parse(sessionStorage.getItem("user"))
+      );
+
       authenticate(data, () => {
-        toast.success('Logged in successfully', {
-          position: 'top-right',
-        })
-        navigate('/')
-        const user = JSON.parse(sessionStorage.getItem('user'));
-        console.log('Retrieved from session storage:', user);
+        toast.success("Logged in successfully", {
+          position: "top-right",
+        });
+        navigate("/");
+        const user = JSON.parse(sessionStorage.getItem("user"));
+        console.log("Retrieved from session storage:", user);
         console.log(user.name, user.email, user.avatar);
-      })
+      });
     } catch (err) {
-    
-      console.error('Error:', err)
+      console.error("Error:", err);
       if (err.response) {
-        console.error('Response Data:', err.response.data)
+        console.error("Response Data:", err.response.data);
       }
-      toast.error('Google Login Failed', {
-        position: 'top-right',
-      })
+      toast.error("Google Login Failed", {
+        position: "top-right",
+      });
     }
-  }
-
-
+  };
 
   const submitHandler = (e) => {
-    e.preventDefault()
-    console.log('Submit button clicked')
-    login(email, password)
-  }
+    e.preventDefault();
+    console.log("Submit button clicked");
+    login(email, password);
+  };
 
   useEffect(() => {
-    
-    if (getUser() && redirect === 'shipping') {
-      navigate(`/${redirect}`)
+    if (getUser() && redirect === "shipping") {
+      navigate(`/${redirect}`);
     }
-  }, [])
+  }, []);
 
   return (
     <Fragment>
@@ -114,16 +162,23 @@ const Login = () => {
         <Loader />
       ) : (
         <Fragment>
-          <Metadata title={'Login'} />
+          <Metadata title={"Login"} />
 
           <section className="relative flex flex-wrap lg:h-screen lg:items-center bg-white">
             <div className="w-full px-4 py-12 sm:px-6 sm:py-16 lg:w-1/2 lg:px-8 lg:py-24">
               <div className="mx-auto max-w-lg text-center">
-                <h1 className="text-2xl font-bold sm:text-3xl text-black">Welcome To OnGarage! Please Login </h1>
+                <h1 className="text-2xl font-bold sm:text-3xl text-black">
+                  Welcome To OnGarage! Please Login{" "}
+                </h1>
               </div>
-              <form className="mx-auto mb-0 mt-8 max-w-md space-y-4" onSubmit={submitHandler}>
+              <form
+                className="mx-auto mb-0 mt-8 max-w-md space-y-4"
+                onSubmit={submitHandler}
+              >
                 <div>
-                  <label htmlFor="email_field" className="sr-only">Email</label>
+                  <label htmlFor="email_field" className="sr-only">
+                    Email
+                  </label>
 
                   <div className="relative">
                     <input
@@ -155,22 +210,29 @@ const Login = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="password_field" className="sr-only">Password</label>
+                  <label htmlFor="password_field" className="sr-only">
+                    Password
+                  </label>
 
                   <div className="relative">
                     <input
                       id="password_field"
                       className="w-full rounded-lg border-2 border-black p-4 pe-12 bg-white text-sm shadow-sm text-black"
                       placeholder="Enter password"
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <label className="absolute inset-y-0 end-0 grid place-content-center px-4" htmlFor="check">
+                    <label
+                      className="absolute inset-y-0 end-0 grid place-content-center px-4"
+                      htmlFor="check"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className={`h-4 w-4 text-black ${showPassword ? 'text-teal-600' : ''}`}
+                        className={`h-4 w-4 text-black ${
+                          showPassword ? "text-teal-600" : ""
+                        }`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -194,20 +256,25 @@ const Login = () => {
                       type="checkbox"
                       value={showPassword}
                       onChange={() => setShowPassword((prev) => !prev)}
-                      style={{ display: 'none' }}
+                      style={{ display: "none" }}
                     />
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className='grid grid-rows-2 '>
+                  <div className="grid grid-rows-2 ">
                     <p className="text-sm text-black">
                       No account?
-                      <Link to="/register"><a className=" hover:underline"> Sign up</a></Link>
+                      <Link to="/register">
+                        <a className=" hover:underline"> Sign up</a>
+                      </Link>
                     </p>
                     <p className="text-sm text-black py-1 ">
                       You Forgot Password?
-                      <Link to="/register" className=" hover:underline"> Forgot Password</Link>
+                      <Link to="/register" className=" hover:underline">
+                        {" "}
+                        Forgot Password
+                      </Link>
                     </p>
                   </div>
 
@@ -218,18 +285,27 @@ const Login = () => {
                   >
                     Sign in
                   </button>
-                  
-
                 </div>
               </form>
 
-              <div className='social'>
-              <GoogleLogin
-    clientId="1050826465955-mpgi9kopddpq75bacchdjkaeahbqr58e.apps.googleusercontent.com"
-    buttonText="Login With Google"
-    onSuccess={responseGoogle}
-    cookiePolicy={'single_host_origin'}
-  />,
+              <div className="social">
+                <div className="col-span-6 sm:col-span-3">               
+                 <GoogleLogin
+                  clientId="1050826465955-mpgi9kopddpq75bacchdjkaeahbqr58e.apps.googleusercontent.com"
+                  buttonText="Login With Google"
+                  onSuccess={responseGoogle}
+                  cookiePolicy={"single_host_origin"}
+                />,
+                </div>
+
+                <div className="col-span-6 sm:col-span-3">
+                <FacebookLogin
+                  appId="888477926021245"
+                  autoLoad={false}
+                  fields="name,email,picture"
+                  callback={responseFacebook}
+                />
+                 </div>
               </div>
             </div>
 
@@ -241,11 +317,10 @@ const Login = () => {
               />
             </div>
           </section>
-
         </Fragment>
       )}
     </Fragment>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
