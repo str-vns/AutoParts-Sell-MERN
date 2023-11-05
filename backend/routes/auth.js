@@ -1,5 +1,4 @@
 const express = require('express');
-const passport = require('passport')
 const router = express.Router();
 const upload = require('../utility/multer');
 const { registerUser, UserLogin, UserLogout, allUsers, getUserDetails, getUserProfile, updatePassword, resetPassword, forgotPassword, updateProfile, googleLogin, facebookLogin } = require('../controllers/authContoller');
