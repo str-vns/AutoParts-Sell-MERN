@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const sendToken = require("../utility/jwtToken");
-const sEmail = require("../utility/sendEmail");
+const sendEmail = require("../utility/sendEmail");
 const crypto = require("crypto");
 const bcrypt = require('bcrypt')
 const cloudinary = require("cloudinary");
@@ -89,35 +89,72 @@ exports.UserLogout =  async (req, res, next ) =>
 }
 
 exports.forgotPassword = async (req, res, next) => {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-        return res.status(404).json({ error: 'User not found with this email' })
-    }
-    const resetToken = user.getResetPasswordToken();
-    await user.save({ validateBeforeSave: false });
-    const resetUrl = `${req.protocol}://localhost:5173/password/reset/${resetToken}`;
-    const message = `Your password reset token is as follow:\n\n${resetUrl}\n\nIf you have not requested this email, then ignore it.`
+    let user; 
     try {
+        user = await User.findOne({ email: req.body.email });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found with this email' });
+        }
+
+
+        const resetToken = user.getResetPasswordToken();
+        await user.save({ validateBeforeSave: false });
+
+        const resetUrl = `https://localhost:5173/password/reset/${resetToken}`;
+        const message = `<section class="max-w-2xl px-6 py-8 mx-auto bg-white dark:bg-gray-900">
+        <header>
+           <h1> ONGarage </h1>     
+        </header>
+    
+        <main class="mt-8">
+            <h4 class="text-gray-700 dark:text-gray-200">Hi \n\n${user.name}\n\n,</h4>
+    
+            <p class="mt-2 leading-loose text-gray-600 dark:text-gray-300">
+                This message Enable you to create New Password In <span class="font-semibold ">OnGarage</span>.
+            </p>
+            
+
+               <a href="${resetUrl}" class="button px-6 py-2 mt-4 text-sm font-medium tracking-wider text-white"> New Password</a>
+            
+            <p class="mt-8 text-gray-600 dark:text-gray-300">
+                Thanks, <br>
+                OnGarage
+            </p>
+        </main>
+        
+    
+        
+    </section>`;
+
         await sendEmail({
             email: user.email,
-            subject: 'ShopIT Password Recovery',
+            subject: 'OnGarage Password Recovery',
             message
-        })
+        });
 
         res.status(200).json({
             success: true,
-            message: `Email sent to: ${user.email}`
-        })
-
+            message: `This Email sent to: ${user.email}`
+        });
     } catch (error) {
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
-        await user.save({ validateBeforeSave: false });
-        return res.status(500).json({ error: error.message })
+
+        console.error(error); 
+
+        if (user) {
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpire = undefined;
+            await user.save({ validateBeforeSave: false });
+        }
+
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+};
+
+
+
 
 exports.resetPassword = async (req, res, next) => {
+    // Hash URL token
     const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
     const user = await User.findOne({
         resetPasswordToken,
@@ -126,12 +163,15 @@ exports.resetPassword = async (req, res, next) => {
 
     if (!user) {
         return res.status(400).json({ message: 'Password reset token is invalid or has been expired' })
+        // return next(new ErrorHandler('Password reset token is invalid or has been expired', 400))
     }
 
     if (req.body.password !== req.body.confirmPassword) {
         return res.status(400).json({ message: 'Password does not match' })
+        // return next(new ErrorHandler('Password does not match', 400))
     }
 
+    // Setup new password
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
