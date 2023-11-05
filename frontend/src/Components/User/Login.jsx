@@ -287,28 +287,44 @@ const Login = () => {
                   </button>
                 </div>
               </form>
-
-              <div className="social">
-                <div className="col-span-6 sm:col-span-3">               
+              <div className="text-center text-sm text-black pt-5">
+              <p> Other Ways to login!</p>
+              <div className="social mt-2 flex grid-cols-6 gap-3 justify-center item-center">
+                
+                <div className="col-span-2 ">               
                  <GoogleLogin
                   clientId="1050826465955-mpgi9kopddpq75bacchdjkaeahbqr58e.apps.googleusercontent.com"
-                  buttonText="Login With Google"
                   onSuccess={responseGoogle}
                   cookiePolicy={"single_host_origin"}
-                />,
+                 icon="fa-google pr-2"
+                 render={renderProps => (
+                  <button
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                    className="h-12 px-2 flex items-center space-x-2 border border-transparent bg-red-600 text-white rounded-lg hover:bg-red-700 hover:shadow-xl cursor-pointer"
+                  >
+                    <img src="./images/icons8-google-48.png" className="p-2 h-10 w-10" alt="Google Icon" />
+                    <span>Login with Google</span>
+                  </button>
+                )}
+                  
+                />
                 </div>
 
-                <div className="col-span-6 sm:col-span-3">
+                <div className="col-span-2 sm:col-span-3 ">
+                
                 <FacebookLogin
                   appId="888477926021245"
                   autoLoad={false}
                   fields="name,email,picture"
                   callback={responseFacebook}
+                  cssClass="h-12 px-5  bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-xl cursor-pointer "
+                  icon="fa-facebook pr-2"
                 />
                  </div>
               </div>
             </div>
-
+           </div>
             <div className="relative h-64 w-full sm:h-96 lg:h-full lg:w-1/2">
               <img
                 alt="Welcome"

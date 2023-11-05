@@ -104,7 +104,6 @@ const Header = () => {
                   <Search />
               
                   {user.name ? (
-          // Display user's information if the user is logged in
           <div className="relative">
             <div
               className="inline-flex items-center overflow-hidden rounded-md bg-white"
