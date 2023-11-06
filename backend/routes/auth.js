@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const upload = require('../utility/multer');
 const { registerUser, UserLogin, UserLogout, allUsers, getUserDetails, getUserProfile, updatePassword, resetPassword, forgotPassword, updateProfile, googleLogin, facebookLogin } = require('../controllers/authContoller');
+const { isAuthenticatedUser } = require('../middlewares/auth');
 
 //user
 
@@ -14,7 +15,7 @@ router.get('/logout', UserLogout)
 router.post('/password/forgot', forgotPassword);
 router.put('/password/reset/:token', resetPassword);
 router.put('/password/update',  updatePassword)
-router.get('/profile',  getUserProfile)
+router.get('/profile', isAuthenticatedUser, getUserProfile)
 router.put('/profile/update', updateProfile)
 
 //admin
