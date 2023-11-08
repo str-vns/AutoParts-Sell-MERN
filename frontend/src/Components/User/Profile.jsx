@@ -28,7 +28,7 @@ const Profile = () => {
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message, {
-        position: toast.POSITION.BOTTOM_RIGHT,
+        position: "top-center",
       });
       setLoading(true);
     }
@@ -69,7 +69,7 @@ const Profile = () => {
         className="h-16 w-16 rounded-lg object-cover shadow-sm"
       /> 
        <Link
-                to="/me/update"
+                to="/proflie/update"
                 id="edit_profile"
                 
               >
