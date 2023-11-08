@@ -9,9 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import {gapi} from 'gapi-script';
 import { useEffect } from 'react';
+import UpdatePassword from './Components/User/UpdatePassword'
 import ForgotPassword from './Components/User/ForgotPassword';
 import NewPassword from './Components/User/NewPassword';
 import Profile from './Components/User/Profile'
+import UpdateProfile from './Components/User/UpdateProfile';
 function App() {
 
   useEffect(() =>
@@ -37,7 +39,9 @@ function App() {
         <Route path="/register" element={<Register />} exact="true" />
         <Route path="/password/forgot" element={<ForgotPassword />} exact="true" />
         <Route path="/password/reset/:token" element={<NewPassword />} exact="true" />
-        <Route path="/me" element={<Profile />} exact="true" />
+        <Route path="/profile" element={<Profile />} exact="true" />
+        <Route path="/password/update" element={<UpdatePassword />} exact="true" />
+        <Route path="/proflie/update" element={<UpdateProfile />} exact="true" />
         <Route/>
       </Routes>
       <Footer />
