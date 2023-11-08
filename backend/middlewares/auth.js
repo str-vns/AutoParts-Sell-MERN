@@ -12,14 +12,19 @@ exports.isAuthenticatedUser = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await User.findById(decoded.id);
+        const user = await User.findById(decoded.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        req.user = user;
         console.log('User Object:', req.user); 
         next();
     } catch (error) {
         return res.status(401).json({ message: 'Invalid token. Login first to access this resource' });
     }
 };
-
 exports.authorizeRoles = (...roles) => {
 	return (req, res, next) => {
         console.log(roles, req.user, req.body);
