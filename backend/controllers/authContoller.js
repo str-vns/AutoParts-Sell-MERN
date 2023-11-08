@@ -8,6 +8,7 @@ const {google} = require('googleapis');
 const {OAuth2} = google.auth;
 const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
+
 const client = new OAuth2('1050826465955-mpgi9kopddpq75bacchdjkaeahbqr58e.apps.googleusercontent.com')
 
 
@@ -191,7 +192,7 @@ exports.updatePassword = async (req, res, next) => {
 
 }
 
-exports.getUserProfile = async (req, res, next) => {
+exports.UserProfile = async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
     res.status(200).json({
@@ -201,38 +202,47 @@ exports.getUserProfile = async (req, res, next) => {
 }
 
 exports.updateProfile = async (req, res, next) => {
-    const newUserData = {
-        name: req.body.name,
-        email: req.body.email
+
+    try {
+        if (req.body.avatar && req.body.avatar !== '') {
+            const user = await User.findById(req.user.id);
+            const image_id = user.avatar.public_id;
+            await cloudinary.v2.uploader.destroy(image_id);
+            
+        }
+    
+        const results = await cloudinary.v2.uploader.upload(req.body.avatar, {
+            folder: 'avatars',
+            width: 150,
+            crop: "scale"
+        });
+    
+        const { name } = req.body;
+        
+        const user = await User.findByIdAndUpdate(req.user.id, {
+            name,
+            avatar: {
+                public_id: results.public_id,
+                url: results.secure_url
+            },
+        }, {
+            new: true, 
+            runValidators: true,
+        });
+
+    
+        res.status(200).json({
+            success: true,
+            user: user,
+        });
+    } catch (error) {
+        console.log('Error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'An error occurred while updating the profile.',
+        });
     }
-
-    // Update avatar
-    // if (req.body.avatar !== '') {
-    //     const user = await User.findById(req.user.id)
-
-    //     const image_id = user.avatar.public_id;
-    //     const res = await cloudinary.v2.uploader.destroy(image_id);
-
-    //     const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    //         folder: 'avatars',
-    //         width: 150,
-    //         crop: "scale"
-    //     })
-
-    //     newUserData.avatar = {
-    //         public_id: result.public_id,
-    //         url: result.secure_url
-    //     }
-    // }
-
-    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
-        new: true,
-        runValidators: true,
-    })
-
-    res.status(200).json({
-        success: true
-    })
+   
 }
 
 exports.allUsers = async (req, res, next) => {
