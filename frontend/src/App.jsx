@@ -14,6 +14,7 @@ import ForgotPassword from './Components/User/ForgotPassword';
 import NewPassword from './Components/User/NewPassword';
 import Profile from './Components/User/Profile'
 import UpdateProfile from './Components/User/UpdateProfile';
+import ProductDetails from './Components/Product/ProductDetails';
 function App() {
 
   useEffect(() =>
@@ -42,6 +43,7 @@ function App() {
         <Route path="/profile" element={<Profile />} exact="true" />
         <Route path="/password/update" element={<UpdatePassword />} exact="true" />
         <Route path="/proflie/update" element={<UpdateProfile />} exact="true" />
+        <Route path="/product/:id" element={<ProductDetails/>} exact="true" />
         <Route/>
       </Routes>
       <Footer />
