@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { getShipping, makeShipping, updateShipping, deleteShipping } = require('../controllers/shippingController');
+const { getShipping, makeShipping, updateShipping, deleteShipping, SingleShipping } = require('../controllers/shippingController');
 const {isAuthenticatedUser} =require('../middlewares/auth');
 
-router.get('/shipping', getShipping)
-router.get('/shipping/new', makeShipping)
-router.route('/shipping/:id', ).put(updateShipping).delete(deleteShipping);
+router.get('/shipping',isAuthenticatedUser, getShipping)
+router.get('/oneshipping/:id', SingleShipping)
+router.post('/shipping/new',isAuthenticatedUser, makeShipping)
+router.route('/shipping/:id',isAuthenticatedUser ).put(updateShipping).delete(deleteShipping);
 
 module.exports = router;
