@@ -15,6 +15,10 @@ import NewPassword from './Components/User/NewPassword';
 import Profile from './Components/User/Profile'
 import UpdateProfile from './Components/User/UpdateProfile';
 import ProductDetails from './Components/Product/ProductDetails';
+import ShippingShow from './Components/Shipping/ShippingShow';
+import AddShipping from './Components/Shipping/AddShipping';
+import  UpdateShipping  from './Components/Shipping/UpdateShipping';
+
 function App() {
 
   useEffect(() =>
@@ -44,6 +48,9 @@ function App() {
         <Route path="/password/update" element={<UpdatePassword />} exact="true" />
         <Route path="/proflie/update" element={<UpdateProfile />} exact="true" />
         <Route path="/product/:id" element={<ProductDetails/>} exact="true" />
+        <Route path="/shippingShow" element={<ShippingShow/>} exact="true" />
+        <Route path="/shipping/create" element={<AddShipping/>} exact="true" />
+        <Route path="/shipping/:id" element={<UpdateShipping/>} exact="true" />
         <Route/>
       </Routes>
       <Footer />

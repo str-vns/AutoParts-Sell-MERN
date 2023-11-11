@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-.dark-page-number {
-  color: #333; 
+.table tbody tr {
+  border-bottom: 1px solid #000000;
+  
 }
+
+/* Add space between columns */
+.table td, .table th {
+  padding: 0.75rem 1.5rem;
+  color: #000000;
+  
+}
+
+/* Style pagination */
+.pagination .page-item .page-link {
+  color: #000;
+  background-color: #fff;
+  margin-right: 10px;
+}
+
+.pagination .page-item.active .page-link {
+  color: #fff;
+  background-color: #000;
+  border-color: #000;
+}
+.pagination {
+  display: flex;
+  flex-direction: row;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
