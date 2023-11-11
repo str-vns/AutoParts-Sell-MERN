@@ -163,6 +163,12 @@ const Header = () => {
                     Profile
                   </Link>
                   <Link
+                    className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                    to="/shippingShow"
+                  >
+                    Location
+                  </Link>
+                  <Link
                     className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                     to="/"
                     onClick={logoutHandler}
