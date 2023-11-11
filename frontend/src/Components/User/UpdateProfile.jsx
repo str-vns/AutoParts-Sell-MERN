@@ -8,7 +8,6 @@ import { getToken } from '../../Utilitys/helpers';
 
 const UpdateProfile = () => {
     const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
     const [avatar, setAvatar] = useState('')
     const [avatarPreview, setAvatarPreview] = useState('/images/default_avatar.jpg')
 
