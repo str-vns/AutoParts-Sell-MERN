@@ -16,11 +16,11 @@ function Search() {
   return (
     <form onSubmit={searchHandler}>
     <div className="input-group-append">
-      <div className="input-group">
+      <div className="input-group ">
         <input 
           type="text"
           id="search_field"
-          className="form-control px-8 py-2 border bg-white text-sm border-black font-medium transition hover:bg-black"
+          className="form-control px-8 py-2 border bg-white text-sm border-black font-medium transition hover:bg-black w-[350px] "
           placeholder="Enter Product Name ..."
           onChange={(e) => setKeyword(e.target.value)}
         />

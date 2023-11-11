@@ -63,45 +63,21 @@ const Header = () => {
               <h3 className="ml-2 text-2xl">OnGarage</h3>
             </div>
           </Link>
+          
           <div className="flex flex-1 items-center justify-end md:justify-between">
-            <nav aria-label="Global" className="hidden md:block">
-              <ul className="flex items-center gap-6 text-sm">
-                <li>
-                  <Link to="/" className="text-gray-500 transition hover:text-gray-500/75">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/" className="text-gray-500 transition hover:text-gray-500/75">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/" className="text-gray-500 transition hover:text-gray-500/75">
-                    History
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/" className="text-gray-500 transition hover:text-gray-500/75">
-                    Services
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/" className="text-gray-500 transition hover:text-gray-500/75">
-                    Projects
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/" className="text-gray-500 transition hover:text-gray-500/75">
-                    Blog
-                  </Link>
-                </li>
-              </ul>
-            </nav>
+            
+
+          <div className='items-center flex justify-center'>
+<Search />
+</div>
+
+
+           
+   
             <div className="flex items-center gap-4">
               <div className="sm:flex sm:gap-4">
                
-                  <Search />
+               
               
                   {user.name ? (
           <div className="relative">
