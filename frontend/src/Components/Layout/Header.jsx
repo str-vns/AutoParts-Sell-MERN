@@ -9,7 +9,7 @@ import { GoogleLogout } from 'react-google-login';
 
 const clientId = "965475144008-u9mfeqg7399ld09i40faoutoe9l4eibs.apps.googleusercontent.com";
 
-const Header = () => {
+const Header = ({ cartProducts }) => {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
 
@@ -76,8 +76,10 @@ const Header = () => {
    
             <div className="flex items-center gap-4">
               <div className="sm:flex sm:gap-4">
-               
-               
+              <Link to="/cart" style={{ textDecoration: 'none' }} className="flex items-center">
+  <img src='./images/icons8-cart-32.png' className="w-7 h-7" alt='cart'/>
+  <span className="ml-2 text-black" id="cart_count">{cartProducts.length}</span>
+</Link>
               
                   {user.name ? (
           <div className="relative">
@@ -158,7 +160,7 @@ const Header = () => {
           </div>
                 ) : (
                   <Link to="/login" id="login_btn">
-                    <a className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700">
+                    <a className="block rounded-md px-5 py-2.5  bg-black text-sm font-medium text-white   hover:bg-white hover:text-black  ">
                       Login
                     </a>
                   </Link>
