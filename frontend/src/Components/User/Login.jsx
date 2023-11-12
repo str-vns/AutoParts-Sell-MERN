@@ -25,9 +25,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   let location = useLocation();
-  const redirect = location.search
-    ? new URLSearchParams(location.search).get("redirect")
-    : "";
+    const redirect = location.search ? new URLSearchParams(location.search).get('redirect') : ''
 
   const login = async (email, password) => {
     try {
@@ -149,7 +147,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (getUser() && redirect === "shipping") {
+    if (getUser() && redirect === "shippings") {
       navigate(`/${redirect}`);
     }
   }, []);
