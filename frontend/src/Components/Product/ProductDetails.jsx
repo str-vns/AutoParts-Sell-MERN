@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Carousel } from 'react-bootstrap'
 
 import Loader from '../Layout/Loader'
 import MetaData from '../Layout/MetaData'
@@ -9,26 +8,19 @@ import axios from 'axios'
 import { toast, } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-const ProductDetails = ({cartItems, addItemToCart}) => {
+const ProductDetails = ({ cartProducts, addCart}) => {
 
     const [loading, setLoading] = useState(true)
     const [product, setProduct] = useState({})
     const [error, setError] = useState('')
     const [quantity, setQuantity] = useState(1)
     const [cart, setCart] = useState([])
-    // const [state, setState] = useState({
-    //     cartItems: localStorage.getItem('cartItems')
-    //         ? JSON.parse(localStorage.getItem('cartItems'))
-    //         : [], shippingInfo: localStorage.getItem('shippingInfo')
-    //             ? JSON.parse(localStorage.getItem('shippingInfo'))
-    //             : {},
-    // })
+
    
 
     let { id } = useParams()
     let navigate = useNavigate()
-    // const alert = useAlert();
-    // const { cartItems } = state
+  
 
     const productDetails = async (id) => {
         let link = `http://localhost:4000/api/v1/product/${id}`
@@ -63,8 +55,8 @@ const ProductDetails = ({cartItems, addItemToCart}) => {
     }
   
 
-    const addToCart =  async () => {
-        await addItemToCart(id, quantity);
+    const addToCart = async () => {
+        await addCart(id, quantity);
     }
 
    let images
@@ -79,14 +71,16 @@ const ProductDetails = ({cartItems, addItemToCart}) => {
         productDetails(id)
         if (error) {
             toast.error(error, {
-                position: toast.POSITION.TOP_LEFT
+                position: 'top-right'
             });
             navigate('/')
         }
     }, [id, error,]);
-    localStorage.setItem('cartItems', JSON.stringify(cartItems))
-    // console.log(state.cartItems)
-    // console.log(cart)
+    if (cartProducts !== undefined) {
+        localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
+      } else {
+        console.error('cartProducts is undefined');
+      }
     return (
         <Fragment>
 
