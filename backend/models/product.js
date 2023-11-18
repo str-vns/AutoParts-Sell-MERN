@@ -75,6 +75,10 @@ const productModel = new mongoose.Schema({
     maxlength: [4, "Product cant exceed up to 4 digits"],
     default: 0,
   },
+  numOfReviews: {
+    type: Number,
+    default: 0
+},
   reviews: {
     type: Number,
     default: 0,
@@ -86,18 +90,38 @@ const productModel = new mongoose.Schema({
         ref: "User",
         required: true,
       },
+      avatar: {
+        public_id: {
+            type: String,
+        },
+        url: {
+            type: String,      
+        }
+    },
       name: {
         type: String,
         required: true,
       },
-      reating: {
+      rating: {
         type: Number,
         required: true,
       },
-      Comment: {
+      comment: {
         type: String,
         required: true,
       },
+      images: [
+        {
+          public_id: {
+            type: String,
+            required: true,
+          },
+          url: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
     },
   ],
   user: {
