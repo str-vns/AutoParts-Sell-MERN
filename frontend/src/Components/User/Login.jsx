@@ -46,6 +46,7 @@ const Login = () => {
           position: "top-right",
         });
         navigate("/");
+        window.location.reload();
       });
     } catch (error) {
       console.error("Error:", error);
