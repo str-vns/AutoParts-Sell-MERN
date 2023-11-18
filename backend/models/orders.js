@@ -14,7 +14,7 @@ const orderModel =  mongoose.Schema(
         ref: 'User',
         required: true
     },
-    orderItem:
+    orderItems:
     [
         {
             name:
@@ -61,7 +61,7 @@ const orderModel =  mongoose.Schema(
       type: Date
     },
 
-    itemPrice:
+    itemsPrice:
     {
         type:Number,
         required: true,
