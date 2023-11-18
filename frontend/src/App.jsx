@@ -25,6 +25,10 @@ import ConfirmOrder from "./Components/Cart/ConfirmOrder";
 import Payment from "./Components/Cart/Payment";
 import ListOrders from "./Components/Order/ListOrders";
 import OrderDetails from "./Components/Order/OrderDetails";
+import Dashboard from "./Components/Admin/Dashboard";
+import ProtectedRoute from "./Components/Route/ProtectedRoute";
+import CreateProducts from "./Components/Admin/CreateProducts";
+import ProductList from "./Components/Admin/ProductList";
 function App() {
   useEffect(() => {
     function start() {
@@ -164,6 +168,9 @@ function App() {
         <Route />
         <Route path="/orderlist/my" element={<ListOrders />} exact="true" />
         <Route path="/OrderDetail/:id" element={<OrderDetails />} exact="true" />
+        <Route path="/Dashboard" element={<ProtectedRoute isAdmin={true}><Dashboard /></ProtectedRoute>} exact="true" />
+        <Route path="/ProductList" element={<ProtectedRoute isAdmin={true}><ProductList /></ProtectedRoute>} exact="true" />
+        <Route path="/CreateProduct" element={<ProtectedRoute isAdmin={true}><CreateProducts /></ProtectedRoute>} exact="true" />
       </Routes>
       <Footer />
     </Router>

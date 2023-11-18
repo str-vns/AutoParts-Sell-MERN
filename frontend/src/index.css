@@ -1,6 +1,8 @@
+@import 'react-image-gallery/styles/css/image-gallery.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 .table tbody tr {
   border-bottom: 1px solid #000000;
@@ -61,4 +63,5 @@
 .yellow {
   color: yellow !important;
 }
+
 
