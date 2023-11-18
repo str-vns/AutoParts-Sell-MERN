@@ -51,7 +51,7 @@ exports.GetOneProduct = async (req, res, next ) => {
 // CREATE ADMIN
 exports.newProducts = async (req, res, next) => {
 
-    let images = []
+  let images = []
 	if (typeof req.body.images === 'string') {
 		images.push(req.body.images)
 	} else {
@@ -62,7 +62,6 @@ exports.newProducts = async (req, res, next) => {
 
 	for (let i = 0; i < images.length; i++) {
 		let imageDataUri = images[i]
-		// console.log(imageDataUri)
 		try {
 			const result = await cloudinary.v2.uploader.upload(`${imageDataUri}`, {
 				folder: 'products',
@@ -94,7 +93,7 @@ exports.newProducts = async (req, res, next) => {
 		success: true,
 		product
 	})
-};
+}
 
 // READ ADMIN
 exports.getAdminproducts = async (req, res, next) => {
