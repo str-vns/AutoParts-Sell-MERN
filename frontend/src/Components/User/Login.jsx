@@ -45,7 +45,13 @@ const Login = () => {
         toast.success("Logged in successfully", {
           position: "top-right",
         });
-        navigate("/");
+        if (data.user.role === 'admin'){
+          authenticate(data, () => navigate("/Dashboard"))
+      }
+      else
+      {
+          authenticate(data, () => navigate("/"))
+      }
         window.location.reload();
       });
     } catch (error) {
