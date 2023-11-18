@@ -18,7 +18,7 @@ const mailsend = async (user, order) => {
             </p>
 
             <ul>
-                <li>Items Price: ${order.itemPrice}</li>
+                <li>Items Price: ${order.itemsPrice}</li>
                 <li>Tax Price: ${order.taxPrice}</li>
                 <li>Shipping Price: ${order.shippingPrice}</li>
                 <li>Total Price: ${order.totalPrice}</li>
@@ -74,8 +74,8 @@ exports.newOrder = async (req, res, next) => {
 }
 
 exports.getSingleOrder = async (req, res, next) => {
-    const order = await Order.findById(req.params.id).populate('user', 'name email')
-
+    const order = await Order.findById(req.params.id).populate('user', 'name email').populate('shippingInfo')
+    
     if (!order) {
         return res.status(404).json({ message: `No Order found with this ID` })
     }
