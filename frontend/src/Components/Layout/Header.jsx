@@ -31,6 +31,8 @@ const Header = ({ cartProducts }) => {
 
   const logoutHandler = () => {
     logoutUser();
+    navigate('/');
+    window.location.reload();
     toast.success('Logged out Successfully', {
       position: 'top-right',
     });
@@ -130,7 +132,7 @@ const Header = ({ cartProducts }) => {
                 <div className="p-2" onClick={closeDropdown}>
                   <Link
                     className="block rounded-lg px-4 py-2 text-sm text-black hover:bg-gray-50 hover:text-gray-700"
-                    to="/orders/me"
+                    to="/orderlist/my"
                   >
                     Orders
                   </Link>
