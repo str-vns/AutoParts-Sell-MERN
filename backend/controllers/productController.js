@@ -196,3 +196,82 @@ exports.deleteProducts = async (req,res,next)=>
         message: "The Product Has been Delete",
     })
 }
+
+
+exports.createReview = async (req, res, next) => {
+
+    const { rating, comment, productId } = req.body;
+
+    let images = req.body.images;
+
+if (!images) {
+  images = [];
+} else if (typeof images === 'string') {
+  images = [images];
+}
+
+let imagesLinks = [];
+
+for (let i = 0; i < images.length; i++) {
+  let imageDataUri = Array.isArray(images[i]) ? images[i][0] : images[i];
+
+  if (typeof imageDataUri !== 'string') {
+    console.error("Invalid image data URI:", imageDataUri);
+    continue;
+  }
+
+  try {
+    const result = await cloudinary.v2.uploader.upload(imageDataUri, {
+      folder: 'products',
+      width: 150,
+      crop: 'scale',
+    });
+
+    imagesLinks.push({
+      public_id: result.public_id,
+      url: result.secure_url,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+    
+    const review = {
+      user: req.user._id,
+      name: req.user.name,
+      avatar: req.user.avatar,
+      rating: Number(rating),
+      comment,
+      images: imagesLinks,
+    };
+    
+    const product = await Product.findById(productId);
+    const isReviewed = product.reviews.find((r) => r.user.toString() === req.user._id.toString());
+    
+    if (isReviewed) {
+      product.reviews.forEach((review) => {
+        if (review.user.toString() === req.user._id.toString()) {
+          review.comment = comment;
+          review.rating = rating;
+          review.images = imagesLinks;
+        }
+      });
+    } else {
+      product.reviews.push(review);
+      product.numOfReviews = product.reviews.length;
+    }
+    
+    product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+    
+    await product.save({ validateBeforeSave: false });
+    
+    if (!product)
+      return res.status(400).json({
+        success: false,
+        message: 'Review not posted',
+      });
+    
+    return res.status(200).json({
+      success: true,
+    })
+}

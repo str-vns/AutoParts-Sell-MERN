@@ -18,7 +18,7 @@ const mailsend = async (user, order) => {
             </p>
 
             <ul>
-                <li>Items Price: ${order.itemsPrice}</li>
+                <li>Items Price: ${order.itemPrice}</li>
                 <li>Tax Price: ${order.taxPrice}</li>
                 <li>Shipping Price: ${order.shippingPrice}</li>
                 <li>Total Price: ${order.totalPrice}</li>
