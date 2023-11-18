@@ -214,10 +214,11 @@ const ProductDetails = ({ cartProducts, addCart }) => {
               id="product_image"
             >
               <div className="container mx-auto px-4">
-                <ReactGall
+              <ReactGall
                   showBullets={false}
                   showFullscreenButton={false}
                   showPlayButton={false}
+                  showNav={false}
                   renderItem={renderCustomImage}
                   renderThumbInner={renderCustomThumb}
                   items={thumb}
