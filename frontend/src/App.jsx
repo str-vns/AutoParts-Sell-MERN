@@ -23,6 +23,8 @@ import Shipping from "./Components/Cart/Shipping";
 import axios from "axios";
 import ConfirmOrder from "./Components/Cart/ConfirmOrder";
 import Payment from "./Components/Cart/Payment";
+import ListOrders from "./Components/Order/ListOrders";
+import OrderDetails from "./Components/Order/OrderDetails";
 function App() {
   useEffect(() => {
     function start() {
@@ -160,6 +162,8 @@ function App() {
         <Route path="/confirm" element={<ConfirmOrder cartProducts={state.cartProducts} ShippingCope={state.ShippingCope}/>} exact="true"/>
         <Route path="/payment" element={<Payment cartProducts={state.cartProducts} shippingInfo={state.ShippingCope} />} />
         <Route />
+        <Route path="/orderlist/my" element={<ListOrders />} exact="true" />
+        <Route path="/OrderDetail/:id" element={<OrderDetails />} exact="true" />
       </Routes>
       <Footer />
     </Router>
