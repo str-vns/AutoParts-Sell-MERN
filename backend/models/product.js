@@ -35,7 +35,7 @@ const productModel = new mongoose.Schema({
       },
     },
   ],
-  categories: {
+  category: {
     type: String,
     required: [true, "Please Choose a Category for this Product"],
     enum: {
