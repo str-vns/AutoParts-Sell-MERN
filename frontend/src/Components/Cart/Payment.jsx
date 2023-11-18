@@ -55,7 +55,7 @@ console.log(shippingCopeId)
             localStorage.removeItem('cartProducts');
             localStorage.removeItem('ShippingCope');
             navigate('/')
-         
+            window.location.reload();
         } catch (error) {
             const message = error.response ? error.response.data.message : 'An error occurred. Please try again.';
             toast.error(message, {
