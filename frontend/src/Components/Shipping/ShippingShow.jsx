@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
-function ShippingShow() {
+const ShippingShow = () => {
   const [shipping, setShipping] = useState([]);
   const [error, setError] = useState("");
   const [deleteError, setDeleteError] = useState("");

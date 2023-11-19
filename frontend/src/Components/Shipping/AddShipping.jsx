@@ -7,7 +7,7 @@ import { countries } from 'countries-list'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function AddShipping() {
+const AddShipping = () => {
     const countriesList = Object.values(countries)
     const [address, setAddress] = useState('');
     const [city, setCity] = useState('');
