@@ -69,7 +69,7 @@ const productModel = new mongoose.Schema({
     type: String,
     required: [true, "Enter The Product Seller"],
   },
-  stocks: {
+  stock: {
     type: Number,
     required: [true, "Enter the quantity of the Product"],
     maxlength: [4, "Product cant exceed up to 4 digits"],
