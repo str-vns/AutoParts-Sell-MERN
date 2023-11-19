@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import Sidebar from '../Layout/Sidebar'
 import Loader from '../Layout/Loader'
 import MetaData from '../Layout/MetaData'
-function Dashboard() {
+const Dashboard = () => {
     const [products, setProducts] = useState([])
     const [error, setError] = useState('')
     const [users, setUsers] = useState([])
@@ -42,7 +42,7 @@ function Dashboard() {
 
     return (
         <Fragment>
-          <div className="flex bg-white">
+          <div className="flex bg-white ">
     <div className="w-full md:w-1/6">
         <Sidebar />
     </div>

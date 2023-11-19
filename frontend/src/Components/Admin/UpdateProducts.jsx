@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from 'react-router-dom';
 import MetaData from "../Layout/MetaData";
 import Sidebar from "../Layout/Sidebar";
 import { getToken } from "../../Utilitys/helpers";
@@ -9,19 +9,23 @@ import "react-toastify/dist/ReactToastify.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-const CreateProducts = () => {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [stock, setStock] = useState(0);
-  const [seller, setSeller] = useState("");
-  const [images, setImages] = useState([]);
-  const [imagesPreview, setImagesPreview] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [success, setSuccess] = useState("");
-  const [product, setProduct] = useState({});
+const UpdateProducts = () => {
+
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState(0);
+    const [description, setDescription] = useState('');
+    const [category, setCategory] = useState('');
+    const [stock, setStock] = useState(0);
+    const [seller, setSeller] = useState('');
+    const [images, setImages] = useState([]);
+    const [oldImages, setOldImages] = useState([]);
+    const [imagesPreview, setImagesPreview] = useState([])
+    const [error, setError] = useState('')
+    const [product, setProduct] = useState({})
+    const [loading, setLoading] = useState(true)
+    const [updateError, setUpdateError] = useState('')
+    const [isUpdated, setIsUpdated] = useState(false)
+  const { id } = useParams();
 
   const categories = [
     "Battery",
@@ -47,23 +51,55 @@ const CreateProducts = () => {
     "Fluids",
   ];
   let navigate = useNavigate();
+  const errMsg = (message = '') => toast.error(message, {
+    position: "top-right"
+});
+const successMsg = (message = '') => toast.success(message, {
+    position: "top-right"
+});
+  const getProductDetails =  async (id) => {
+    try {
+       const { data } = await axios.get(`http://localhost:4000/api/v1/product/${id}`)
+       setProduct(data.product)
+       setLoading(false)
+       
+    } catch (error) {
+        setError(error.response.data.message)
+        
+    }
+}
 
-  const submitHandler = () => {
+  const updateProduct = async (id, productData)  => {
+    try {
+       
+        const config = {
+            headers: {
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${getToken()}`
+            }
+        }
+        const { data } = await axios.put(`http://localhost:4000/api/v1/admin/product/${id}`, productData, config)
+        setIsUpdated(data.success)
+       
+    } catch (error) {
+        setUpdateError(error.response.data.message)
+        
+    }
+}
+const submitHandler = () => {
 
     const formData = new FormData();
-    formData.set("name", name);
-    formData.set("price", price);
-    formData.set("description", description);
-    formData.set("category", category);
-    formData.set("stock", stock);
-    formData.set("seller", seller);
-
-    images.forEach((image) => {
-      formData.append("images", image);
-    });
-
-    newProduct(formData);
-  };
+    formData.set('name', name);
+    formData.set('price', price);
+    formData.set('description', description);
+    formData.set('category', category);
+    formData.set('stock', stock);
+    formData.set('seller', seller);
+    images.forEach(image => {
+        formData.append('images', image)
+    })
+    updateProduct(product._id, formData)
+}
 
   const onChange = (e) => {
     const files = Array.from(e.target.files);
@@ -81,55 +117,30 @@ const CreateProducts = () => {
       reader.readAsDataURL(file);
     });
   };
-  const newProduct = async (formData) => {
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${getToken()}`,
-        },
-      };
-
-      const response = await axios.post(
-        "http://localhost:4000/api/v1/admin/product/new",
-        formData,
-        config
-      );
-      setLoading(false);
-      console.log(response.data);
-      setSuccess(response.data.success);
-      setProduct(response.data.product);
-    } catch (error) {
-      setError(error.response.data.message);
-    }
-  };
+ 
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Product name is required"),
     price: Yup.number()
-      .required("Price is required")
-      .min(50, "Price greater than 50")
-      .max(10000, "Price Should not max at 10000"),
+      .required("Price is required"),
     description: Yup.string().required("Description is required"),
     category: Yup.string().required("Category is required"),
-    stock: Yup.number()
-      .required("Stock is required")
-      .min(1, "Stock should be greater than 1")
-      .max(50, "Stock Should not max at 50"),
+    stock: Yup.number("Stock is required")
+      .required("Stock is required"),
     seller: Yup.string().required("Seller name is required"),
-    images: Yup.string().required("Images is required"),
+
   });
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      price: 0,
-      description: "",
-      category: "",
-      stock: 0,
-      seller: "",
-      images: "",
-    },
+        name: "product.name" || "",
+        price: typeof product.price === 'number' ? product.price : product.price || 0,
+        description: "product.description" || "",
+        category: "product.category" || "",
+        stock: typeof product.stock === 'number' ? product.stock : product.stock || 0,
+        seller: "product.seller" || "",
+  
+      },
     validationSchema,
     onSubmit: (values) => {
       try {
@@ -142,20 +153,32 @@ const CreateProducts = () => {
   });
 
   useEffect(() => {
+    if (product && product._id !== id) {
+        getProductDetails(id)
+    } else {
+        setName(product.name);
+        setPrice(product.price);
+        setDescription(product.description);
+        setCategory(product.category);
+        setSeller(product.seller);
+        setStock(product.stock)
+        setOldImages(product.images)
+    }
     if (error) {
-      toast.error(error, {
-        position: "top-right",
-      });
+        errMsg(error)
+        
     }
-
-    if (success) {
-      navigate("/ProductList");
-      window.location.reload()
-      toast.success("Product created successfully", {
-        position: "top-right",
-      });
+    if (updateError) {
+        errMsg(updateError);
+       
     }
-  }, [error, success]);
+    if (isUpdated) {
+        navigate('/ProductList');
+        window.location.reload()
+        successMsg('Product updated successfully');
+       
+    }
+}, [error, isUpdated, updateError, product, id])
 
   return (
     <Fragment>
@@ -188,7 +211,7 @@ const CreateProducts = () => {
                       type="text"
                       id="name_field"
                       className="form-control w-72 rounded-lg border-2 text-black border-black p-2 text-sm shadow-sm bg-white"
-                      value={formik.values.name}
+                      value={name}
                       onChange={(e) => {
                         setName(e.target.value);
                         formik.setFieldValue("name", e.target.value);
@@ -211,10 +234,11 @@ const CreateProducts = () => {
                   </label>
                   <div className="flex items-center">
                     <input
-                      type="text"
+                      type="number"
+                      step="0.01"
                       id="price_field"
                       className="form-control w-72 rounded-lg border-2 text-black border-black p-2 text-sm shadow-sm bg-white"
-                      value={formik.values.price}
+                      value={price}
                       onChange={(e) => {
                         setPrice(e.target.value);
                         formik.setFieldValue("price", e.target.value);
@@ -240,7 +264,7 @@ const CreateProducts = () => {
                       className="form-control w-72 rounded-lg border-2 text-black border-black p-2 text-sm shadow-sm bg-white"
                       id="description_field"
                       rows="8"
-                      value={formik.values.description}
+                      value={description}
                       onChange={(e) => {
                         setDescription(e.target.value);
                         formik.setFieldValue("description", e.target.value);
@@ -266,7 +290,7 @@ const CreateProducts = () => {
                     <select
                       className="form-control w-72 rounded-lg border-2 text-black border-black p-2 text-sm shadow-sm bg-white"
                       id="category_field"
-                      value={formik.values.category}
+                      value={category}
                       onChange={(e) => {
                         setCategory(e.target.value);
                         formik.setFieldValue("category", e.target.value);
@@ -297,7 +321,7 @@ const CreateProducts = () => {
                       type="number"
                       id="stock_field"
                       className="form-control w-72 rounded-lg border-2 text-black border-black p-2 text-sm shadow-sm bg-white"
-                      value={formik.values.stock}
+                      value={stock}
                       onChange={(e) => {
                         setStock(e.target.value);
                         formik.setFieldValue("stock", e.target.value);
@@ -323,7 +347,7 @@ const CreateProducts = () => {
                       type="text"
                       id="seller_field"
                       className="form-control w-72 rounded-lg border-2 text-black border-black p-2 text-sm shadow-sm bg-white"
-                      value={formik.values.seller}
+                      value={seller}
                       onChange={(e) => {
                         setSeller(e.target.value);
                         formik.setFieldValue("seller", e.target.value);
@@ -347,17 +371,10 @@ const CreateProducts = () => {
                         name="images"
                         className="custom-file-input hidden"
                         id="customFile"
-                        onChange={(event) => {
-                          onChange(event);
-                          formik.setFieldValue(
-                            "images",
-                            event.currentTarget.files
-                          );
-                          formik.setFieldTouched("images", true, false);
-                        }}
+                        onChange={onChange}
                         multiple
                       />
-                   <div className="flex items-center">
+              
                     <label
                       htmlFor="customFile"
                       className="px-4 py-2 border-2  border-black rounded-md cursor-pointer bg-white text-black hover:bg-black hover:text-white"
@@ -365,12 +382,7 @@ const CreateProducts = () => {
                       Choose Images
                     </label>
 
-                    {formik.errors.images && formik.touched.images && (
-                        <div className="text-red-500 text-sm ml-3">
-                          {formik.errors.images}
-                        </div>
-                      )}
-                    </div>
+                    
                   </div>
                   <div className="flex flex-row mb-2">
                     {imagesPreview.map((img) => (
@@ -400,6 +412,7 @@ const CreateProducts = () => {
       </div>
     </Fragment>
   );
+  
 }
 
-export default CreateProducts;
+export default UpdateProducts
