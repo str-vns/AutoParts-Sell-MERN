@@ -112,69 +112,71 @@ exports.getAdminproducts = async (req, res, next) => {
   };
 
 //UPDATE
-exports.updateProducts = async (req,res,next) =>
-{
-    let products = await Product.findById(req.params.id);
-    if(!products)
-    {
-        return res.status(404).json
-        ({
-            success: false,
-            message: "The Product doesn't Exist ",
-        })
-    }
-    let images = [];
+exports.updateProducts = async (req,res,next) => {
+	let product = await Product.findById(req.params.id);
 
-    if(typeof req.body.images === 'string')
-    {
-        images.push(req.body.images)
+if (!product) {
+  return res.status(404).json({
+    success: false,
+    message: 'Product not found'
+  });
+}
 
-    }
-    else
-    {
-        images = req.body.images
-    }
+let images = req.body.images || [];
 
-    if(images !== undefined)
-    {
-        for(let i = 0; i < Product.images.length; i++)
-        {
-            const output =  await cloudinary.v2.uploader.destroy(Product.images[i].public_id)
-        }
+
+if (images.length > 0) {
+
+  for (let i = 0; i < product.images.length; i++) {
+    try {
+      let imageDataUri = product.images[i];
+      const result = await cloudinary.v2.uploader.destroy(`${imageDataUri.public_id}`);
+    } catch (error) {
+      console.log(error);
     }
-    let imagingLinks = [];
-    for (let i = 0; i < images.length; i++)
-    {
-        const result = await cloudinary.v2.uploader.upload(images[i],
-        {
-            folder: 'products'
-        });
-        imagingLinks.push 
-        ({
-            public_id: result.public_id,
-            url: result.secure_url
-        })
+  }
+
+  let imagesLinks = [];
+  for (let i = 0; i < images.length; i++) {
+    try {
+      let imageDataUri = images[i];
+      const result = await cloudinary.v2.uploader.upload(`${imageDataUri}`, {
+        folder: 'products',
+        width: 150,
+        crop: 'scale',
+      });
+      imagesLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
+    } catch (error) {
+      console.log(error);
     }
-    req.body.images = imagingLinks;
-    products = await Product.findByIdAndUpdate(req.params.id, req.body,
-        {
-            new: true,
-            runValidators: true,
-            useFindAndModify: false
-        })
-        
-        if(!products)
-        {
-            return res.status(404).json
-            ({
-                success: false,
-                message: "The Product Not Updated ",
-            })
-        }
-        res.status(200).json({
-            success: true,
-            products
-        })
+  }
+
+  req.body.images = imagesLinks;
+} else {
+
+  req.body.images = product.images;
+}
+
+product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+  new: true,
+  runValidators: true,
+  useFindAndModify: false,
+});
+
+if (!product) {
+  return res.status(400).json({
+    success: false,
+    message: 'Product not updated',
+  });
+}
+
+return res.status(200).json({
+  success: true,
+  product,
+});
 }
 
 //DELETE
@@ -196,7 +198,7 @@ exports.deleteProducts = async (req,res,next)=>
     })
 }
 
-
+// REVIEW
 exports.createReview = async (req, res, next) => {
 
     const { rating, comment, productId } = req.body;
