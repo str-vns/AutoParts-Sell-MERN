@@ -29,6 +29,7 @@ import Dashboard from "./Components/Admin/Dashboard";
 import ProtectedRoute from "./Components/Route/ProtectedRoute";
 import CreateProducts from "./Components/Admin/CreateProducts";
 import ProductList from "./Components/Admin/ProductList";
+import UpdateProducts from "./Components/Admin/UpdateProducts";
 function App() {
   useEffect(() => {
     function start() {
@@ -117,11 +118,7 @@ function App() {
         <Route path="/search/:keyword" element={<Home />} exact="true" />
         <Route path="/login" element={<Login />} exact="true" />
         <Route path="/register" element={<Register />} exact="true" />
-        <Route
-          path="/password/forgot"
-          element={<ForgotPassword />}
-          exact="true"
-        />
+        <Route path="/password/forgot" element={<ForgotPassword />} exact="true" />
         <Route
           path="/password/reset/:token"
           element={<NewPassword />}
@@ -151,26 +148,18 @@ function App() {
         <Route path="/shippingShow" element={<ShippingShow />} exact="true" />
         <Route path="/shipping/create" element={<AddShipping />} exact="true" />
         <Route path="/shipping/:id" element={<UpdateShipping />} exact="true" />
-        <Route
-          path="/cart"
-          element={
-            <Cart
-              cartProducts={state.cartProducts}
-              addCart={addCart}
-              removeCart={removeCart}
-            />
-          }
-          exact="true"
-        />
+        <Route path="/cart" element={<Cart cartProducts={state.cartProducts} addCart={addCart} removeCart={removeCart}/> } exact="true" />
         <Route path="/shippings" element={ <Shipping shipping={state.ShippingCope} shippingIds={shippingIds} /> }/>
         <Route path="/confirm" element={<ConfirmOrder cartProducts={state.cartProducts} ShippingCope={state.ShippingCope}/>} exact="true"/>
         <Route path="/payment" element={<Payment cartProducts={state.cartProducts} shippingInfo={state.ShippingCope} />} />
         <Route />
         <Route path="/orderlist/my" element={<ListOrders />} exact="true" />
         <Route path="/OrderDetail/:id" element={<OrderDetails />} exact="true" />
+        {/* admin */}
         <Route path="/Dashboard" element={<ProtectedRoute isAdmin={true}><Dashboard /></ProtectedRoute>} exact="true" />
         <Route path="/ProductList" element={<ProtectedRoute isAdmin={true}><ProductList /></ProtectedRoute>} exact="true" />
         <Route path="/CreateProduct" element={<ProtectedRoute isAdmin={true}><CreateProducts /></ProtectedRoute>} exact="true" />
+        <Route path="/UpdateProduct/:id" element={<ProtectedRoute isAdmin={true}><UpdateProducts /></ProtectedRoute>} exact="true" />
       </Routes>
       <Footer />
     </Router>
