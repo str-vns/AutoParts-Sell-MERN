@@ -11,7 +11,7 @@ router.get('/product/:id', GetOneProduct);
 //admin
 router.get('/admin/products', isAuthenticatedUser, authorizeRoles('admin'), getAdminproducts);
 router.post('/admin/product/new', isAuthenticatedUser, upload.array('images', 10), newProducts);
-router.route('/admin/product/:id', ).put(upload.array('images', 10), updateProducts).delete(deleteProducts);
+router.route('/admin/product/:id', isAuthenticatedUser).put(upload.array('images', 10), updateProducts).delete(deleteProducts);
 
 
 //review
