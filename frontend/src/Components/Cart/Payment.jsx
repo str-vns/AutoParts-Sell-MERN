@@ -7,13 +7,15 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getToken } from '../../Utilitys/helpers';
 
-
 const Payment = ({cartProducts, ShippingCope}) => {
     const [loading, setLoading] = useState(true)
     let navigate = useNavigate();
 
     const [shippingCopeId, setShippingCopeId] = useState(localStorage.getItem('ShippingCopeId') || "");
 
+   
+
+      
 console.log(shippingCopeId)
     useEffect(() => {
         // Store ShippingCope.id in local storage and update shippingCopeId state whenever ShippingCope changes
@@ -49,8 +51,9 @@ console.log(shippingCopeId)
             const { data } = await axios.post(`http://localhost:4000/api/v1/order/new`, order, config)
             setLoading(false)
             toast.success('order created', {
-                position: toast.POSITION.BOTTOM_RIGHT
+                position: "top-right"
             });
+
             sessionStorage.removeItem('orderInfo');
             localStorage.removeItem('cartProducts');
             localStorage.removeItem('ShippingCope');
@@ -59,7 +62,7 @@ console.log(shippingCopeId)
         } catch (error) {
             const message = error.response ? error.response.data.message : 'An error occurred. Please try again.';
             toast.error(message, {
-                position: toast.POSITION.BOTTOM_RIGHT
+                position: "top-right"
             });
         }
     }
