@@ -87,6 +87,11 @@ const orderModel =  mongoose.Schema(
         required: true,
         default: 'Processing'
     },
+    orderConfirmation: {
+        type: String,
+        required: true,
+        default: 'NotConfirm'
+    },
     deliveredAt: {
         type: Date
     },
