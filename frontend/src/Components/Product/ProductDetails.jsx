@@ -256,7 +256,7 @@ const ProductDetails = ({ cartProducts, addCart }) => {
                     </button>
                     <input
                       type="number"
-                      className="count bg-white h-8 w-8 cursor-text items-center justify-center active:ring-gray-500"
+                      className="count bg-white h-8 w-10 cursor-text items-center justify-center active:ring-gray-500"
                       value={quantity}
                       readOnly
                     />
