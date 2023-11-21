@@ -253,16 +253,37 @@ exports.allUsers = async (req, res, next) => {
     })
 }
 
-exports.allUsers  = async (req, res, next) => {
+exports.removeUser = async(req, res, next) => {
     const user = await User.findById(req.params.id);
 
     if (!user) {
-        return res.status(400).json({ message: `User does not found with id: ${req.params.id}` })
+        return res.status(401).json({ message: `User does not found : ${req.params.id}` })
     }
 
-    res.status(200).json({
+    // Remove avatar from cloudinary
+    const image_id = user.avatar.public_id;
+    await cloudinary.v2.uploader.destroy(image_id);
+    await User.findByIdAndRemove(req.params.id);
+    return res.status(200).json({
         success: true,
-        user
+    })
+}
+
+exports.updateUser = async (req,res,next) => 
+{
+    const UpdateDataUser = {
+        name: req.body.name,
+        email: req.body.email,
+        role: req.body.role
+    }
+
+    const user = await User.findByIdAndUpdate(req.params.id, UpdateDataUser, {
+        new: true,
+        runValidators: true,
+    })
+
+    return res.status(200).json({
+        success: true
     })
 }
 
@@ -330,24 +351,15 @@ exports.googleLogin = async (req, res) => {
 exports.facebookLogin = async (req, res) => {
     try {
         const { accessToken, userID } = req.body;
-        
-
         const URL = `https://graph.facebook.com/v2.9/${userID}/?fields=id,name,email,picture&access_token=${accessToken}`;
-        
-
         const response = await fetch(URL);
-
 
         if (!response.ok) {
             throw new Error(`Failed to fetch data from Facebook: ${response.statusText}`);
         }
 
-
         const data = await response.json();
-        
         const { email, name, picture } = data;
-
-
         let user = await User.findOne({ email });
 
         if (user) {
@@ -357,13 +369,8 @@ exports.facebookLogin = async (req, res) => {
               path: '/user/refresh_token',
               maxAge: 7 * 24 * 60 * 60 * 1000
             });
-          
-            res.json({ msg: "Login success!", user }); 
         } else {
-
             const passwordHash = await bcrypt.hash(email, 12);
-
-
             const newUser = new User({
                 name,
                 email,
@@ -374,9 +381,7 @@ exports.facebookLogin = async (req, res) => {
                 }
             });
 
-
             await newUser.save();
-
             user = newUser;
 
             const refresh_token = createRefreshToken({ id: newUser._id });
@@ -385,9 +390,9 @@ exports.facebookLogin = async (req, res) => {
                 path: '/user/refresh_token',
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
-
-            res.json({ msg: "Login success!", user: newUser });
         }
+
+        sendToken(user, 200, res);
     } catch (err) {
         return res.status(500).json({ msg: err.message });
     }
