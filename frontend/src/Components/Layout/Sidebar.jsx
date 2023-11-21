@@ -10,6 +10,7 @@ function Sidebar() {
             <div className="px-2">
               <ul className="space-y-1 border-t border-gray-100 pt-4">
                 <li>
+                  {/* dashboard */}
                   <Link
                     to="/Dashboard"
                     className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -18,6 +19,7 @@ function Sidebar() {
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 64 64"
                       id="dashboard"
+                      width="50px" height="20px"
                     >
                       <path d="M57,12H7a3.00328,3.00328,0,0,0-3,3V49a3.00327,3.00327,0,0,0,3,3H57a3.00327,3.00327,0,0,0,3-3V15A3.00328,3.00328,0,0,0,57,12ZM6,15a1.00127,1.00127,0,0,1,1-1H57a1.00127,1.00127,0,0,1,1,1v3H6ZM58,49a1.00126,1.00126,0,0,1-1,1H7a1.00126,1.00126,0,0,1-1-1V20H58Z"></path>
                       <path d="M55.0098 15H55a1.00491 1.00491 0 1 0 .0098 0zM51 15h-.0098A1.00491 1.00491 0 1 0 51 15zM47.0049 15h-.0098a1.00491 1.00491 0 1 0 .0098 0zM9 24h7a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zM9 28h7a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zM9 32h7a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zM9 36h7a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zM39 34h8.8188a.99938.99938 0 0 0 .9834-1.18069 11.95632 11.95632 0 0 0-3.0557-6.0119L46.6255 25H51a1 1 0 0 0 0-2H46a1.00007 1.00007 0 0 0-.8994.56251l-.8999 1.8499a11.916 11.916 0 0 0-5.02-2.2146A.99939.99939 0 0 0 38 24.18121V33A1.0001 1.0001 0 0 0 39 34zm1-8.542A10.06564 10.06564 0 0 1 46.542 32H40zM55 25h.0098A1.00491 1.00491 0 1 0 55 25z"></path>
@@ -32,6 +34,7 @@ function Sidebar() {
                 </li>
 
                 <li>
+                  {/* product */}
                   <Link
                     to="/ProductList"
                     className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
@@ -39,6 +42,7 @@ function Sidebar() {
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
+                      width="50px" height="20px"
                       viewBox="0 0 24 24"
                       version="1.1"
                     >
@@ -135,54 +139,35 @@ function Sidebar() {
 
                 <li>
                   <Link
-                    to=""
+                    to="/OrderList"
                     className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 opacity-75"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                      />
-                    </svg>
+                   <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="25px" viewBox="0 0 24 24" fill="none">
+<rect x="5" y="4" width="14" height="17" rx="2" stroke="#222222"/>
+<path d="M9 9H15" stroke="#222222" stroke-linecap="round"/>
+<path d="M9 13H15" stroke="#222222" stroke-linecap="round"/>
+<path d="M9 17H13" stroke="#222222" stroke-linecap="round"/>
+</svg>
 
                     <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
-                      Invoices
+                      Orders
                     </span>
                   </Link>
                 </li>
 
                 <li>
-                  <a
-                    href=""
-                    className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 opacity-75"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
+                 <Link 
+                 to="/AccountList"  className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="20px" viewBox="0 0 24 24" fill="none">
+<circle cx="12" cy="9" r="3" stroke="#1C274C" stroke-width="1.5"/>
+<path d="M17.9691 20C17.81 17.1085 16.9247 15 11.9999 15C7.07521 15 6.18991 17.1085 6.03076 20" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
 
                     <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
                       Account
                     </span>
-                  </a>
+                    </Link>
                 </li>
               </ul>
             </div>
