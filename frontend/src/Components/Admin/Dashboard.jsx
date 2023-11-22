@@ -1,134 +1,183 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import Sidebar from '../Layout/Sidebar'
-import Loader from '../Layout/Loader'
-import MetaData from '../Layout/MetaData'
+import React, { Fragment, useEffect, useState } from "react";
+import Sidebar from "../Layout/Sidebar";
+import Loader from "../Layout/Loader";
+import MetaData from "../Layout/MetaData";
+import DProductSale from "./DProductSale";
+import DShippingcommon from "./DShippingcommon";
+import DProductsRevenue from "./DProductsRevenue";
+import { Link } from "react-router-dom";
+import DMonthlySale from "./DMonthlySale";
+import { getToken } from '../../Utilitys/helpers'
+import axios from 'axios'
+
 const Dashboard = () => {
-    const [products, setProducts] = useState([])
-    const [error, setError] = useState('')
-    const [users, setUsers] = useState([])
-    const [orders, setOrders] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [totalAmount, setTotalAmount] = useState([])
-    let outOfStock = 0;
-    products.forEach(product => {
-        if (product.stock === 0) {
-            outOfStock += 1;
-        }
-    })
-    const getAdminProducts = async () => {
-        try {
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState("");
+  const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [totalAmount, setTotalAmount] = useState([]);
+  const [totalUser, setTotalUser] = useState([]);
+  const [totalStock, setTotalStock] = useState([]);
 
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${getToken()}`
-                }
-            }
 
-            // const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/admin/products`, config)
-            console.log(data)
-            setProducts(data.products)
-            setLoading(false)
-        } catch (error) {
-            setError(error.response.data.message)
-        }
+  const getTotalAmount = async () => {
+
+  
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${getToken()}`,
+        },
+      };
+      const response = await axios.get(`http://localhost:4000/api/v1/admin/totalsales`, config)
+  
+      console.log('API request successful', response.data.totalSale); 
+      setTotalAmount(response.data.totalSale);
+    } catch (error) {
+      console.log('API request failed', error); 
+  
+      if (error.response && error.response.data) {
+        setError(error.response.data.message);
+      } else {
+        setError(error.message);
+      }
     }
+  }
 
-    useEffect(() => {
-        getAdminProducts()
-        // allOrders()
-        // allUsers()
-    }, [])
+  const getUserCount = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      };
+      const response = await axios.get(`http://localhost:4000/api/v1/admin/numusers`, config)
+      console.log('API request successful', response.data.numofUser); 
+      setTotalUser(response.data.numofUser);
+      console.log(response.data.numofUser)
 
-    return (
-        <Fragment>
-          <div className="flex bg-white ">
-    <div className="w-full md:w-1/6">
+    } catch (error) {
+      console.log('API request failed', error); 
+  
+      if (error.response && error.response.data) {
+        setError(error.response.data.message);
+      } else {
+        setError(error.message);
+      }
+    }
+  }
+
+  const getStockCount = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      };
+      const response = await axios.get(`http://localhost:4000/api/v1/admin/productStocky`, config)
+      console.log('API request successful', response.data.ItemStock); 
+      setTotalStock(response.data.ItemStock);
+      console.log(response.data.ItemStock)
+
+    } catch (error) {
+      console.log('API request failed', error); 
+  
+      if (error.response && error.response.data) {
+        setError(error.response.data.message);
+      } else {
+        setError(error.message);
+      }
+    }
+  }
+  useEffect(() => {
+    getTotalAmount()
+    getUserCount()
+    getStockCount()
+  }, []);
+
+  return (
+    <Fragment>
+    <div className="flex bg-white">
+      <div className="w-full md:w-1/6">
         <Sidebar />
-    </div>
-
-
-                <div className="w-full md:w-5/6">
-                    <h1 className="my-4">Dashboard</h1>
-                    {loading ? <Loader /> : (
-                        <Fragment>
-                            <MetaData title={'Admin Dashboard'} />
-
-                            <div className="row pr-4">
-                                <div className="col-xl-12 col-sm-12 ">
-                                    <div className="card text-white bg-primary o-hidden h-100">
-                                        <div className="card-body">
-                                            {/* <div className="text-center card-font-size">Total Amount<br /> <b>${totalAmount && totalAmount.toFixed(2)}</b>
-                                            </div> */}
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row pr-4">
-                                <div className="col-xl-3 col-sm-6 ">
-                                    <div className="card text-white bg-success o-hidden h-100">
-                                        <div className="card-body">
-                                            <div className="text-center card-font-size">Products<br /> <b>{products && products.length}</b></div>
-                                        </div>
-
-                                        <Link className="card-footer text-white clearfix small z-1" to="/admin/products">
-                                            <span className="float-left">View Details</span>
-                                            <span className="float-right">
-                                                <i className="fa fa-angle-right"></i>
-                                            </span>
-                                        </Link>
-                                    </div>
-                                </div>
-                                <div className="col-xl-3 col-sm-6 ">
-                                    <div className="card text-white bg-danger o-hidden h-100">
-
-                                        {/* <div className="card-body">
-                                            <div className="text-center card-font-size">Orders<br /> <b>{orders && orders.length}</b></div>
-                                        </div> */}
-
-                                        <Link className="card-footer text-white clearfix small z-1" to="/admin/orders">
-                                            <span className="float-left">View Details</span>
-                                            <span className="float-right">
-                                                <i className="fa fa-angle-right"></i>
-                                            </span>
-                                        </Link>
-                                    </div>
-                                </div>
-
-
-                                <div className="col-xl-3 col-sm-6 ">
-                                    <div className="card text-white bg-info o-hidden h-100">
-
-                                        {/* <div className="card-body">
-                                            <div className="text-center card-font-size">Users<br /> <b>{users && users.length}</b></div>
-                                        </div> */}
-
-                                        <Link className="card-footer text-white clearfix small z-1" to="/admin/users">
-                                            <span className="float-left">View Details</span>
-                                            <span className="float-right">
-                                                <i className="fa fa-angle-right"></i>
-                                            </span>
-                                        </Link>
-                                    </div>
-                                </div>
-                                <div className="col-xl-3 col-sm-6 ">
-                                    <div className="card text-white bg-warning o-hidden h-100">
-                                        <div className="card-body">
-                                            <div className="text-center card-font-size">Out of Stock<br /> <b>{outOfStock}</b></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                          
-                        </Fragment>
-
-                    )}
+      </div>
+  
+      <div className="w-full md:w-5/6 mr-60">
+        <div className="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+              Dashboard
+            </h2>
+          </div>
+  
+          <Fragment>
+            <MetaData title={"Admin Dashboard"} />
+  
+            <div className="mt-8 sm:mt-12 mb-12">
+              <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="group">
+                <div className="flex flex-col rounded-lg bg-white border-2 border-black px-4 py-8 text-center group-hover:bg-black">
+       
+                  <dt className="order-last text-lg font-medium text-black  group-hover:text-white">
+                    Total Sales
+                  </dt>
+  
+                  <dd className="text-sm font-extrabold text-black md:text-4xl group-hover:text-white">
+  $ {totalAmount}
+</dd>
+</div>
                 </div>
-
+                <div className="group">
+                <div className="flex flex-col rounded-lg bg-white border-2 border-black px-4 py-8 text-center group-hover:bg-black">
+      
+          <dt className="order-last text-lg font-medium text-black group-hover:text-white">
+            Total User
+          </dt>
+          <dd className="text-sm font-extrabold text-black md:text-4xl group-hover:text-white">{totalUser}</dd>
+        </div>
+      </div>
+      <div className="group">
+                <div className="flex flex-col rounded-lg bg-white border-2 border-black px-4 py-8 text-center group-hover:bg-black">
+          
+                  <dt className="order-last text-lg font-medium text-black group-hover:text-white">
+                    Total NaN Stock
+                  </dt>
+  
+                  <dd className="text-sm font-extrabold text-black md:text-4xl group-hover:text-white">{totalStock}</dd>
+                  </div>
+                </div>
+              </dl>
             </div>
-        </Fragment >
-    )
-}
+            <div className="flex flex-col items-center justify-center">
+              <h6 className=" ml-24 text-black">Monthly Sales</h6>
+              <div className="w-full h-64 mb-32 ml-36">
+                <DMonthlySale />
+              </div>
+  
+              <div className="grid grid-cols-3 gap-3 w-full">
+             
+                <div className="h-64">
+                <h6 className=" ml-32 text-black">Product Sales</h6>
+                  <DProductSale />
+                </div>
+                <div className="h-64">
+                <h6 className=" ml-48 text-black">Most Shipped</h6>
+                  <DShippingcommon/>
+                </div>
+                <div className="h-64">
+                <h6 className=" ml-44 text-black">Product Revenue</h6>
+                  <DProductsRevenue/>
+                </div>
+              </div>
+            </div>
+          </Fragment>
+        </div>
+      </div>
+      </div>
+    </Fragment>
+  );
+};
 
-export default Dashboard
+export default Dashboard;
