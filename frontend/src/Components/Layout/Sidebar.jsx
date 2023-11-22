@@ -169,6 +169,24 @@ function Sidebar() {
                     </span>
                     </Link>
                 </li>
+
+                <li>
+                 <Link 
+                 to="/ReviewsProduct"  className="group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="25px" viewBox="0 0 24 24" fill="none">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M15 14.25C13.3431 14.25 12 15.5931 12 17.25C12 18.9069 13.3431 20.25 15 20.25C16.6569 20.25 18 18.9069 18 17.25C18 15.5931 16.6569 14.25 15 14.25ZM10.5 17.25C10.5 14.7647 12.5147 12.75 15 12.75C17.4853 12.75 19.5 14.7647 19.5 17.25C19.5 19.7353 17.4853 21.75 15 21.75C12.5147 21.75 10.5 19.7353 10.5 17.25Z" fill="#080341"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M15.75 8.25H8.25V6.75H15.75V8.25Z" fill="#080341"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M15.75 11.25H8.25V9.75H15.75V11.25Z" fill="#080341"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5.25 3H16.0607L18.75 5.68934V12H17.25V6.31066L15.4393 4.5H6.75V19.5H9.75V21H5.25V3Z" fill="#080341"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M9.75 14.25H8.25V12.75H9.75V14.25Z" fill="#080341"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M13.5791 16.0854L14.9207 15.4146L15.4634 16.5H16.4999V18H14.5364L13.5791 16.0854Z" fill="#080341"/>
+</svg>
+
+                    <span className="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100">
+                      Reviews
+                    </span>
+                    </Link>
+                </li>
               </ul>
             </div>
           </div>
