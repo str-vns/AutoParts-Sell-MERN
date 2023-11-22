@@ -34,6 +34,7 @@ import Accountslist from "./Components/Admin/Accountslist";
 import AccountUpdate from "./Components/Admin/AccountUpdate";
 import OrdersList from "./Components/Admin/OrdersList";
 import OrdersProcess from "./Components/Admin/OrdersProcess";
+import ReviewsProduct from "./Components/Admin/ReviewsProduct";
 function App() {
   useEffect(() => {
     function start() {
@@ -139,16 +140,7 @@ function App() {
           element={<UpdateProfile />}
           exact="true"
         />
-        <Route
-          path="/product/:id"
-          element={
-            <ProductDetails
-              cartProducts={state.cartProducts}
-              addCart={addCart}
-            />
-          }
-          exact="true"
-        />
+        <Route path="/product/:id" element={ <ProductDetails cartProducts={state.cartProducts} addCart={addCart} /> } exact="true" />
         <Route path="/shippingShow" element={<ShippingShow />} exact="true" />
         <Route path="/shipping/create" element={<AddShipping />} exact="true" />
         <Route path="/shipping/:id" element={<UpdateShipping />} exact="true" />
@@ -168,7 +160,7 @@ function App() {
         <Route path="/AccountUpdate/:id" element={<ProtectedRoute isAdmin={true}><AccountUpdate /></ProtectedRoute>} exact="true" />
         <Route path="/OrderList" element={<ProtectedRoute isAdmin={true}><OrdersList /></ProtectedRoute>} exact="true" />
         <Route path="/OrderProcess/:id" element={<ProtectedRoute isAdmin={true}><OrdersProcess /></ProtectedRoute>} exact="true" />
-
+        <Route path="/ReviewsProduct" element={<ProtectedRoute isAdmin={true}><ReviewsProduct /></ProtectedRoute>} exact="true" />
       </Routes>
       <Footer />
     </Router>
