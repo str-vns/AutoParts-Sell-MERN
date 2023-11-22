@@ -4,6 +4,7 @@ const User = require('../models/user');
 const sendEmail = require('../utility/sendEmail')
 const puppeteer = require('puppeteer');
 
+
 const mailsend = async (user, order) => {
     const message = `
     <section style="container max-width: 2rem; padding: 0.75rem 1.5rem; margin: 0 auto; background-color: white;">
@@ -388,3 +389,88 @@ function generateHtml(order) {
     res.setHeader('Content-Disposition', `attachment; filename=reciept.pdf`);
     res.send(pdf);
   };
+
+  exports.totalSales = async (req, res, next) => {
+    const date = new Date();
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const totalSale = await Order.aggregate([
+        {
+            $match: {
+                paidAt: {
+                    $gte: firstDayOfMonth,
+                    $lte: lastDayOfMonth
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                totalSales: { $sum: "$totalPrice" }
+            }
+        }
+    ])
+    
+    if (!totalSale.length) {
+        return res.status(200).json({
+            success: true,
+            totalSale: 0
+        })
+    }
+    
+    res.status(200).json({
+        success: true,
+        totalSale: totalSale[0].totalSales
+    })
+}
+
+exports.MonthlySales = async (req, res, next) =>
+{
+    const salesPerMonth = await Order.aggregate([
+
+        {
+            $group: {
+                _id: {
+                    year: { $year: "$paidAt" },
+                    month: { $month: "$paidAt" }
+                },
+                total: { $sum: "$totalPrice" },
+            },
+        },
+
+        {
+            $addFields: {
+                month: {
+                    $let: {
+                        vars: {
+                            monthsInString: [, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', ' Sept', 'Oct', 'Nov', 'Dec'],
+                            
+                        },
+                        in: {
+                            $arrayElemAt: ['$$monthsInString', "$_id.month"]
+                        }
+                    }
+                }
+            }
+        },
+        { $sort: { "_id.month": 1 } },
+        {
+            $project: {
+                _id: 0,
+                month: 1,
+                total: 1,
+            }
+        }
+
+    ])
+    if (!salesPerMonth) {
+        return res.status(404).json({
+            message: 'error sales per month',
+        })
+    }
+    res.status(200).json({
+        success: true,
+        salesPerMonth
+    })
+}

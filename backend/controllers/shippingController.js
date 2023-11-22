@@ -1,5 +1,5 @@
 const Shipping = require('../models/shipping')
-
+const Order = require('../models/orders')
 exports.getShipping = async (req, res, next) =>
 {
 
@@ -94,3 +94,52 @@ exports.SingleShipping = async (req, res, next) =>
     })
    
 }
+
+exports.ShippingCommonSales = async (req, res, next) => {
+    try {
+        const mostCommonShippingCountry = await Order.aggregate([
+            
+            {
+        $lookup: {
+            from: 'shippings',
+            localField: 'shippingInfo',
+            foreignField: '_id',
+            as: 'shippingDetails'
+        },
+    },
+    { $unwind: "$shippingDetails" },
+    {
+        $group: {
+            _id: "$shippingDetails.country",
+            count: { $sum: 1 }
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            country: '$_id',
+            count: 1
+        }
+    },
+    { $sort: { count: -1 } }
+
+              ]);
+      
+        if (!mostCommonShippingCountry || mostCommonShippingCountry.length === 0) {
+          return res.status(404).json({
+            message: 'No shipping information found'
+          });
+        }
+      
+        res.status(200).json({
+          success: true,
+          mostCommonShippingCountry
+        });
+      } catch (error) {
+        console.error('Error during shipping information calculation:', error);
+        res.status(500).json({
+          message: 'An error occurred during shipping information calculation'
+        });
+      }
+  }
+

@@ -1,6 +1,8 @@
 const Product = require("../models/product");
+const Order = require('../models/orders')
 const APIFeatures = require("../utility/apiFeatures");
 const cloudinary = require("cloudinary");
+const product = require("../models/product");
 //CURD for products
 
 // UserParts
@@ -275,4 +277,174 @@ for (let i = 0; i < images.length; i++) {
     return res.status(200).json({
       success: true,
     })
+}
+
+exports.getReviewsProduct = async (req, res, next) => 
+ { 
+  const product = await Product.findById(req.query.id);
+  res.status(200).json({
+    success: true,
+    reviews: product.reviews,
+  })
+
+}
+
+exports.deleteReviews = async (req, res, next) =>
+{
+  const product = await Product.findById(req.query.productId);
+    const reviews = product.reviews.filter(review => review._id.toString() !== req.query.id.toString());
+    const numOfReviews = reviews.length;
+
+    const ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length
+
+    await Product.findByIdAndUpdate(req.query.productId, {
+        reviews,
+        ratings,
+        numOfReviews
+    }, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+
+    return res.status(200).json({
+        success: true
+    })
+}
+
+exports.productCommonSales = async (req, res, next) => {
+  try {
+    const totalSales = await Order.aggregate([
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$itemsPrice" }
+        },
+      },
+    ]);
+
+    const sales = await Order.aggregate([
+      { $project: { _id: 0, "orderItems": 1, totalPrice: 1 } },
+      { $unwind: "$orderItems" },
+      {
+        $group: {
+          _id: { product: "$orderItems.name" },
+          total: { $sum: { $multiply: ["$orderItems.price", "$orderItems.quantity"] } }
+        },
+      },
+    ]);
+
+    if (!totalSales || totalSales.length === 0) {
+      return res.status(404).json({
+        message: 'No total sales found'
+      });
+    }
+
+    if (!sales || sales.length === 0) {
+      return res.status(404).json({
+        message: 'No product sales found'
+      });
+    }
+
+    const totalPercentage = sales.map(item => {
+      const percent = Number(((item.total / totalSales[0].total) * 100).toFixed(2));
+      return {
+        name: item._id.product,
+        percent
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      totalPercentage,
+      sales,
+      totalSales
+    });
+  } catch (error) {
+    console.error('Error during sales calculation:', error);
+    res.status(500).json({
+      message: 'An error occurred during sales calculation'
+    });
+  }
+}
+
+exports.productRevenue = async (req, res, next) => {
+  try {
+    const totalSales = await Order.aggregate([
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$itemsPrice" }
+        },
+      },
+    ]);
+
+    const sales = await Order.aggregate([
+      { $unwind: "$orderItems" },
+      {
+        $group: {
+          _id: "$orderItems.name",
+          totalRevenue: { $sum: { $multiply: ["$orderItems.price", "$orderItems.quantity"] } }
+        },
+      },
+      { $sort: { totalRevenue: -1 } }
+    ]);
+
+    if (!totalSales || totalSales.length === 0) {
+      return res.status(404).json({
+        message: 'No total sales found'
+      });
+    }
+
+    if (!sales || sales.length === 0) {
+      return res.status(404).json({
+        message: 'No product sales found'
+      });
+    }
+
+    const totalPercentage = sales.map(item => {
+      const percent = Number(((item.total / totalSales[0].total) * 100).toFixed(2));
+      return {
+        name: item._id.product,
+        percent
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      sales,
+      totalSales
+    });
+  } catch (error) {
+    console.error('Error during sales calculation:', error);
+    res.status(500).json({
+      message: 'An error occurred during sales calculation'
+    });
+  }
+}
+
+exports.productStocky = async (req, res, next) => {
+  const ItemStock = await product.aggregate([
+    {
+      $match: {
+        stock: 0 
+      }
+    },
+    {
+      $group: {
+        _id: "$stock",
+        count: { $sum: 1 } 
+      }
+    }
+  ])
+
+  let count = 0;
+  if (ItemStock.length > 0) {
+    count = ItemStock[0].count;
+  }
+
+  res.status(200).json({
+    success: true,
+    ItemStock: count
+  })
 }

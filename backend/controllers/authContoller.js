@@ -397,3 +397,37 @@ exports.facebookLogin = async (req, res) => {
         return res.status(500).json({ msg: err.message });
     }
 };
+
+exports.numofUser = async (req, res, next) => {
+    try {
+        const numofUser = await User.aggregate([
+          {
+            $group: {
+              _id: "$_id", 
+            },
+          },
+          {
+            $group: {
+              _id: null, 
+              count: { $sum: 1 } 
+            },
+          }
+        ]);
+      
+        if (!numofUser || numofUser.length === 0) {
+          return res.status(404).json({
+            message: 'No User found'
+          });
+        }
+      
+        res.status(200).json({
+          success: true,
+          numofUser: numofUser[0].count
+        });
+      } catch (error) {
+        console.error('Error during User counting:', error);
+        res.status(500).json({
+          message: 'An error occurred during User calculation'
+        });
+      }
+  }
