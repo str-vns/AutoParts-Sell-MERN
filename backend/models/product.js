@@ -77,8 +77,8 @@ const productModel = new mongoose.Schema({
   },
   numOfReviews: {
     type: Number,
-    default: 0
-},
+    default: 0,
+  },
   reviews: {
     type: Number,
     default: 0,
@@ -92,12 +92,12 @@ const productModel = new mongoose.Schema({
       },
       avatar: {
         public_id: {
-            type: String,
+          type: String,
         },
         url: {
-            type: String,      
-        }
-    },
+          type: String,
+        },
+      },
       name: {
         type: String,
         required: true,
