@@ -7,7 +7,7 @@ const connectDB = async () =>
             useNewUrlParser: true,
             useUnifiedTopology: true,
         }).then (con => {
-            console.log(`You are connected To MongoDB: ${con.connection.host}`);
+            console.log(`You are connected To MongoDB`);
         })
 }
 
