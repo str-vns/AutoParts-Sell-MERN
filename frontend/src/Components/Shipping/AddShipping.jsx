@@ -6,6 +6,8 @@ import axios from 'axios'
 import { countries } from 'countries-list'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const AddShipping = () => {
     const countriesList = Object.values(countries)
@@ -23,9 +25,7 @@ const AddShipping = () => {
 
     let navigate = useNavigate()
 
-    const submitHandler = (e) => {
-        e.preventDefault();
-
+    const submitHandler = () => {
 
         const formData = new FormData();
         formData.set('address', address);
@@ -56,6 +56,7 @@ const AddShipping = () => {
 
         }
     }
+
     useEffect(() => {
 
         if (error) {
@@ -75,6 +76,37 @@ const AddShipping = () => {
     }, [error, success,])
 
 
+    const validationSchema = Yup.object({
+
+        address: Yup.string().required("Address is required"),
+        city: Yup.string().required("City is required"),
+        phoneNo: Yup.number().required("Phone is required"),
+        postalCode: Yup.string().required("Postal Code is required"),
+        country: Yup.string().required("country is required")
+      });
+    
+      const formik = useFormik({
+        initialValues: {
+            address: "",
+            city: "",
+            phoneNo: "",
+            postalCode: "",
+            country: ""
+        },
+        validationSchema,
+        onSubmit: (values) => {
+          console.log("Submitting Shipping with values:", values);
+      
+          try {
+            submitHandler(values);
+            toast.success("Review Success");
+          } catch (error) {
+            console.error("Error Shipping review:", error);
+          }
+        },
+      });
+      
+
     return (
         <Fragment>
             <MetaData title={'New Location'} />
@@ -84,7 +116,7 @@ const AddShipping = () => {
                
                     <Fragment>
                         <div className="mx-auto max-w-lg text-center border-2 p-10 border-black">
-                            <form  onSubmit={submitHandler} encType='multipart/form-data'>
+                            <form  onSubmit={formik.handleSubmit} encType='multipart/form-data'>
                                 <h1 className="text-2xl font-bold sm:text-3xl text-black">New Product</h1>
 
                                 <div className="form-group mx-auto mb-0 mt-8 max-w-md space-y-4">
@@ -93,9 +125,18 @@ const AddShipping = () => {
                                         type="text"
                                         id="address_field"
                                         className="form-control w-full rounded-lg border-2 text-black border-black p-4 text-sm shadow-sm bg-white"
-                                        value={address}
-                                        onChange={(e) => setAddress(e.target.value)}
-                                    />
+                                        value={formik.values.address}
+                                        onChange={(e) => {
+                                            setAddress(e.target.value);
+                                          formik.setFieldValue("address", e.target.value);
+                                        }}
+                                      />
+                                      {formik.errors.address && formik.touched.address && (
+                                        <div className="text-red-500 text-sm ml-3">
+                                          {formik.errors.address}
+                                        </div>
+                                      )}
+
                                 </div>
 
                                 <div className="form-group">
@@ -104,9 +145,17 @@ const AddShipping = () => {
                                         type="text"
                                         id="city_field"
                                         className="form-control w-full rounded-lg border-2 text-black border-black p-4 text-sm shadow-sm bg-white"
-                                        value={city}
-                                        onChange={(e) => setCity(e.target.value)}
-                                    />
+                                        value={formik.values.city}
+                                        onChange={(e) => {
+                                            setCity(e.target.value);
+                                          formik.setFieldValue("city", e.target.value);
+                                        }}
+                                      />
+                                      {formik.errors.city && formik.touched.city && (
+                                        <div className="text-red-500 text-sm ml-3">
+                                          {formik.errors.city}
+                                        </div>
+                                      )}
                                 </div>
 
                                 <div className="form-group">
@@ -115,9 +164,17 @@ const AddShipping = () => {
                                         type="text"
                                         id="phoneNo_field"
                                         className="form-control w-full rounded-lg border-2 text-black border-black p-4 text-sm shadow-sm bg-white"
-                                        value={phoneNo}
-                                        onChange={(e) => setPhone(e.target.value)}
-                                    />
+                                        value={formik.values.phoneNo}
+                                        onChange={(e) => {
+                                            setCity(e.target.value);
+                                          formik.setFieldValue("phoneNo", e.target.value);
+                                        }}
+                                      />
+                                      {formik.errors.phoneNo && formik.touched.phoneNo && (
+                                        <div className="text-red-500 text-sm ml-3">
+                                          {formik.errors.phoneNo}
+                                        </div>
+                                      )}
                                 </div>
 
                                 <div className="form-group">
@@ -126,9 +183,18 @@ const AddShipping = () => {
                                         type="text"
                                         id="postal_code_field"
                                         className="form-control w-full rounded-lg border-2 text-black border-black p-4 text-sm shadow-sm bg-white"
-                                        value={postalCode}
-                                        onChange={(e) => setPostal(e.target.value)}
-                                    />
+
+                                    value={formik.values.postalCode}
+                                        onChange={(e) => {
+                                            setPostal(e.target.value);
+                                          formik.setFieldValue("postalCode", e.target.value);
+                                        }}
+                                      />
+                                      {formik.errors.postalCode && formik.touched.postalCode && (
+                                        <div className="text-red-500 text-sm ml-3">
+                                          {formik.errors.postalCode}
+                                        </div>
+                                      )}
                                 </div>
 
                                 <div className="form-group">
@@ -136,18 +202,27 @@ const AddShipping = () => {
                             <select
                                 id="country_field"
                                 className="form-control w-full rounded-lg border-2 text-black border-black p-4 text-sm shadow-sm bg-white"
-                                value={country}
-                                onChange={(e) => setCountry(e.target.value)}
+                                value={formik.values.country}
+                                onChange={(e) => {
+                                    setCountry(e.target.value);
+                                  formik.setFieldValue("country", e.target.value);
+                                }}
                                 required
-                            >
+                              >
 
-                                {countriesList.map(country => (
+                           {countriesList.map(country => (
                                     <option key={country.name} value={country.name}>
                                         {country.name}
                                     </option>
                                 ))}
 
                             </select>
+
+                            {formik.errors.country && formik.touched.country && (
+                                        <div className="text-red-500 text-sm ml-3">
+                                          {formik.errors.country}
+                                        </div>
+                                      )}
                         </div>
                                
 
