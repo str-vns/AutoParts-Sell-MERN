@@ -120,7 +120,7 @@ const Login = () => {
       );
       console.log("Received from server:", data.user);
 
-      // Store the user data in session storage
+
       sessionStorage.setItem("user", JSON.stringify(data.user));
       console.log(
         "Stored in session storage:",
