@@ -4,7 +4,8 @@ import MetaData from "../Layout/MetaData";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Register = () => {
   const [user, setUser] = useState({
@@ -42,17 +43,15 @@ const Register = () => {
   };
 
   const submitHandler = (e) => {
-    e.preventDefault();
-
     if (!name || !email || !password) {
-       toast.error('Name, email, and password are required');
-        return;
-      }
+      toast.error("Name, email, and password are required");
+      return;
+    }
 
-      if (!avatar) {
-        toast.error('image are required');
-         return;
-       }
+    if (!avatar) {
+      toast.error("image are required");
+      return;
+    }
 
     if (password !== passwordConfirm) {
       setError("Password does not match");
@@ -89,8 +88,6 @@ const Register = () => {
     }
   };
 
-
-
   const register = async (userData) => {
     try {
       const config = {
@@ -108,11 +105,12 @@ const Register = () => {
       setIsAuthenticated(true);
       setLoading(false);
       setUser(data.user);
-      toast.success('Registration successful');
+      toast.success("Registration successful");
       navigate("/");
+      window.location.reload()
     } catch (error) {
-      setError(error.message || 'An error occurred during registration');
-      toast.error('Registration failed');
+      setError(error.message || "An error occurred during registration");
+      toast.error("Registration failed");
       setIsAuthenticated(false);
       console.log(error.response.data);
       setLoading(false);
@@ -121,6 +119,41 @@ const Register = () => {
       console.log(error);
     }
   };
+
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Name is required"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(8, "Password must have at 8 characters"),
+    passwordConfirm: Yup.string()
+      .required("Please re-type your password")
+      .oneOf([Yup.ref("password")], "Passwords does not match"),
+      images: Yup.string().required("Image is required")
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
+      images: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      console.log("Submitting Register with values:", values);
+
+      try {
+        submitHandler(values);
+        toast.success("Register Success");
+      } catch (error) {
+        console.error("Error submitting review:", error);
+      }
+    },
+  });
 
   return (
     <Fragment>
@@ -184,7 +217,7 @@ const Register = () => {
 
               <form
                 className="mt-8 grid grid-cols-6 gap-6"
-                onSubmit={submitHandler}
+                onSubmit={formik.handleSubmit}
                 encType="multipart/form-data"
               >
                 <h1 className="text-3xl font-bold text-black col-span-6">
@@ -197,14 +230,22 @@ const Register = () => {
                     className="block text-sm font-medium text-gray-700"
                   >
                     Name
+                    {formik.errors.name && formik.touched.name && (
+                      <span className="text-red-500 text-sm ml-3">
+                        {formik.errors.name}
+                      </span>
+                    )}
                   </label>
                   <input
                     type="text"
                     id="name_field"
                     className="mt-1 p-4 lg:w-full md:w-full sm:w-full rounded-md border-2 h-10 border-black bg-white text-sm text-gray-700 shadow-sm"
                     name="name"
-                    value={name}
-                    onChange={onChange}
+                    value={formik.values.name}
+                    onChange={(event) => {
+                      onChange(event);
+                      formik.setFieldValue("name", event.target.value);
+                    }}
                   />
                 </div>
 
@@ -214,14 +255,22 @@ const Register = () => {
                     className="block text-sm font-medium text-gray-700"
                   >
                     Email
+                    {formik.errors.email && formik.touched.email && (
+                      <span className="text-red-500 text-sm ml-3">
+                        {formik.errors.email}
+                      </span>
+                    )}
                   </label>
                   <input
                     type="email"
                     id="email_field"
                     className="mt-1 p-4 lg:w-full md:w-full sm:w-full rounded-md border-2 h-10 border-black bg-white text-sm text-gray-700 shadow-sm"
                     name="email"
-                    value={email}
-                    onChange={onChange}
+                    value={formik.values.email}
+                    onChange={(event) => {
+                      onChange(event);
+                      formik.setFieldValue("email", event.target.value);
+                    }}
                   />
                 </div>
 
@@ -231,63 +280,77 @@ const Register = () => {
                       htmlFor="password_field"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Password
+                      Password 
                     </label>
                     <div className="relative">
-                    <input
-  type={showPassword ? "text" : "password"}
-  id="password_field"
-  className="mt-1 p-4 lg:w-full md:w-full sm:w-full rounded-md border-2 h-10 border-black bg-white text-sm text-gray-700 shadow-sm"
-  name="password"
-  value={password}
-  onChange={onChange}
-/>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password_field"
+                        className="mt-1 p-4 lg:w-full md:w-full sm:w-full rounded-md border-2 h-10 border-black bg-white text-sm text-gray-700 shadow-sm"
+                        name="password"
+                        value={formik.values.password}
+                        onChange={(event) => {
+                          onChange(event);
+                          formik.setFieldValue("password", event.target.value);
+                        }}
+                        />
+                     
+
                       <span
                         onClick={toggleShowPassword}
                         className="absolute right-4 bottom-1 transform -translate-y-1/2 cursor-pointer"
                       >
-                        {showPassword ? <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-4 w-4 text-black `}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg> :  <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-4 w-4 text-teal-600 `}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>}
+                        {showPassword ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={`h-4 w-4 text-black `}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={`h-4 w-4 text-teal-600 `}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                        )}
                       </span>
                     </div>
                   </div>
+                  {formik.errors.password && formik.touched.password && (
+                      <span className="text-red-500 text-sm ml-3">
+                        {formik.errors.password}
+                      </span>
+                    )}
                 </div>
 
                 <div className="col-span-6 sm:col-span-3">
@@ -295,7 +358,7 @@ const Register = () => {
                     htmlFor="passwordConfirm"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Password Confirmation
+                    Password Confirmation  
                   </label>
                   <div className="relative">
                     <input
@@ -303,55 +366,67 @@ const Register = () => {
                       id="passwordConfirm"
                       name="passwordConfirm"
                       className="mt-1 p-4 lg:w-full md:w-full sm:w-full rounded-md border-2 h-10 border-black bg-white text-sm text-gray-700 shadow-sm"
-                      value={passwordConfirm}
-                      onChange={onChange}
-                    />
+                      value={formik.values.passwordConfirm}
+                      onChange={(event) => {
+                        onChange(event);
+                        formik.setFieldValue("passwordConfirm", event.target.value);
+                      }}
+                      />
+
                     <span
                       onClick={toggleShowPassword}
                       className="absolute right-4 bottom-1 transform -translate-y-1/2 cursor-pointer"
                     >
-                      {showPassword ?  <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-4 w-4 text-black `}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg> :  <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-4 w-4 text-teal-600 `}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
-                      }
+                      {showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className={`h-4 w-4 text-black `}
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className={`h-4 w-4 text-teal-600 `}
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      )}
                     </span>
                   </div>
+                  {formik.errors.passwordConfirm && formik.touched.passwordConfirm && (
+                      <span className="text-red-500 text-sm ml-3">
+                        {formik.errors.passwordConfirm}
+                      </span>
+                    )}
                 </div>
 
                 <div className="col-span-6 form-group">
@@ -378,7 +453,14 @@ const Register = () => {
                         className="hidden "
                         id="customFile"
                         accept="image/*"
-                        onChange={onChange}
+                        onChange={(event) => {
+                          onChange(event);
+                          formik.setFieldValue(
+                            "images",
+                            event.currentTarget.files
+                          );
+                          formik.setFieldTouched("images", true, false);
+                        }}
                       />
                       <label
                         htmlFor="customFile"
@@ -386,6 +468,11 @@ const Register = () => {
                       >
                         Choose Avatar
                       </label>
+                      {formik.errors.images && formik.touched.images && (
+                      <span className="text-red-500 text-sm ml-3">
+                        {formik.errors.images}
+                      </span>
+                    )}
                     </div>
                   </div>
                 </div>
@@ -398,15 +485,11 @@ const Register = () => {
                 >
                   REGISTER
                 </button>
-             
               </form>
-          
-             
             </div>
           </main>
         </div>
       </section>
-      
     </Fragment>
   );
 };
