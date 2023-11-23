@@ -1,42 +1,81 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
-function CheckoutSteps({ shipping, confirmOrder, payment } ) {
-    return (
-        <div className="checkout-progress d-flex justify-content-center mt-5">
+function CheckoutSteps({ shipping, confirmOrder, payment }) {
+  return (
+    <div className="flex justify-center items-center pt-5  bg-white">
+      
+      <div class="relative after:absolute after:inset-x-0 after:top-1/2 after:block after:h-0.5 after:-translate-y-1/2 after:rounded-lg after:bg-gray-100">
+        <ol class="relative z-10 flex justify-between text-sm font-medium text-gray-500">
+          {shipping ? (
+            <Link to="shippings" className="float-right">
+              <li class="flex items-center gap-2 bg-white p-2">
+                <span class="h-6 w-6 rounded-full  bg-blue-600 text-center text-[10px]/6 font-bold text-white">
+                  1
+                </span>
 
-            {shipping ? <Link to='shippings' className="float-right">
-                <div className="triangle2-active"></div>
-                <div className="step active-step">Shipping</div>
-                <div className="triangle-active"></div>
-            </Link> : <Link to="#!" disabled>
-                    <div className="triangle2-incomplete"></div>
-                    <div className="step incomplete">Shipping</div>
-                    <div className="triangle-incomplete"></div>
-                </Link>}
+                <span class="hidden sm:block ">Shipping</span>
+              </li>
+            </Link>
+          ) : (
+            <Link to="#!" disabled>
+              <li class="flex items-center gap-2 bg-white p-2">
+                <span class="h-6 w-6 rounded-full  bg-gray-100 text-center text-[10px]/6 font-bold ">
+                  1
+                </span>
 
-            {confirmOrder ? <Link to='/order/confirm' className="float-right">
-                <div className="triangle2-active"></div>
-                <div className="step active-step">Confirm Order</div>
-                <div className="triangle-active"></div>
-            </Link> : <Link to="#!" disabled>
-                    <div className="triangle2-incomplete"></div>
-                    <div className="step incomplete">Confirm Order</div>
-                    <div className="triangle-incomplete"></div>
-                </Link>}
+                <span class="hidden sm:block ">Shipping</span>
+              </li>
+            </Link>
+          )}
 
-            {payment ? <Link to='/payment' className="float-right">
-                <div className="triangle2-active"></div>
-                <div className="step active-step">Payment</div>
-                <div className="triangle-active"></div>
-            </Link> : <Link to="#!" disabled>
-                    <div className="triangle2-incomplete"></div>
-                    <div className="step incomplete">Payment</div>
-                    <div className="triangle-incomplete"></div>
-                </Link>}
+          {confirmOrder ? (
+            <Link to="/order/confirm" className="float-right">
+              <li class="flex items-center gap-2 bg-white p-2">
+                <span class="h-6 w-6 rounded-full  bg-blue-600 text-center text-[10px]/6 font-bold text-white">
+                  2
+                </span>
 
-        </div>
-    )
+                <span class="hidden sm:block ">Confirm Order</span>
+              </li>
+            </Link>
+          ) : (
+            <Link to="#!" disabled>
+              <li class="flex items-center gap-2 bg-white p-2">
+                <span class="h-6 w-6 rounded-full  bg-gray-100 text-center text-[10px]/6 font-bold ">
+                  2
+                </span>
+
+                <span class="hidden sm:block ">Confirm Order</span>
+              </li>
+            </Link>
+          )}
+
+          {payment ? (
+            <Link to="/payment" className="float-right">
+              <li class="flex items-center gap-2 bg-white p-2">
+                <span class="h-6 w-6 rounded-full  bg-blue-600 text-center text-[10px]/6 font-bold text-white">
+                  3
+                </span>
+
+                <span class="hidden sm:block ">Payment</span>
+              </li>
+            </Link>
+          ) : (
+            <Link to="#!" disabled>
+              <li class="flex items-center gap-2 bg-white p-2">
+                <span class="h-6 w-6 rounded-full  bg-gray-100 text-center text-[10px]/6 font-bold ">
+                  3
+                </span>
+
+                <span class="hidden sm:block ">Payment</span>
+              </li>
+            </Link>
+          )}
+        </ol>
+      </div>
+    </div>
+  );
 }
 
-export default CheckoutSteps
+export default CheckoutSteps;
