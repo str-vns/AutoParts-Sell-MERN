@@ -1,5 +1,6 @@
 import React, { Fragment, useState,} from 'react'
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import MetaData from '../Layout/MetaData'
 import axios from 'axios'
 import { toast } from 'react-toastify';
@@ -28,7 +29,7 @@ const ForgotPassword = () => {
             });
             navigate('/login');
         } catch (error) {
-            console.error('Error:', error); // Log the error message to the console
+            console.error('Error:', error); 
             if (error.response) {
                 console.error('Response Data:', error.response.data);
             }
@@ -38,9 +39,32 @@ const ForgotPassword = () => {
         }
     };
 
+    const validationSchema = Yup.object({
 
-    const submitHandler = (e) => {
-        e.preventDefault();
+        email: Yup.string()
+        .email("Invalid email format")
+        .required("Email is required"),
+      });
+    
+      const formik = useFormik({
+        initialValues: {
+            email: "",
+        },
+        validationSchema,
+        onSubmit: (values) => {
+          console.log("Submitting Shipping with values:", values);
+      
+          try {
+            submitHandler(values);
+          window.location.reload()
+          } catch (error) {
+            console.error("Error Shipping review:", error);
+          }
+        },
+      });
+
+    const submitHandler = () => {
+
         const formData = new FormData();
         formData.set('email', email);
         forgotPassword(formData)
@@ -59,18 +83,30 @@ const ForgotPassword = () => {
                     type="email"
                     id="email_field"
                     className="mt-1 p-4 w-full lg:w-[500px] rounded-md border-2 h-10 border-black bg-white text-sm text-gray-700"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                    value={formik.values.email}
+                    onChange={(e) => {
+                        setEmail(e.target.value);
+                      formik.setFieldValue("email", e.target.value);
+                    }}
+                  />
+                  {formik.errors.email && formik.touched.email && (
+                    <div className="text-red-500 text-sm ml-3">
+                      {formik.errors.email}
+                    </div>
+                  )}
             </div>
 
+<div className='mt-2'>
             <button
                 id="forgot_password_button"
                 type="submit"
                 className="btn btn-block py-3 mt-3 text-white hover:border-2 hover:border-black hover:bg-white hover:text-black"
-                disabled={loading ? true : false}>
+                disabled={loading ? true : false}
+                onClick={formik.handleSubmit}>
+               
                 Send Email
             </button>
+            </div>
         </form>
     </div>
 </div>

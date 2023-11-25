@@ -4,6 +4,8 @@ import MetaData from "../Layout/MetaData";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const NewPassword = () => {
   const [password, setPassword] = useState("");
@@ -30,8 +32,8 @@ const NewPassword = () => {
         passwords,
         config
       );
-
       setSuccess(data.success);
+    navigate('/login');
     } catch (error) {
       setError(error.response.data.error);
     }
@@ -55,8 +57,35 @@ const NewPassword = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const submitHandler = (e) => {
-    e.preventDefault();
+  const validationSchema = Yup.object({
+
+    password: Yup.string()
+      .required("Password is required")
+      .min(8, "Password must have at 8 characters"),
+      confirmPassword: Yup.string()
+      .required("Please re-type your password")
+      .oneOf([Yup.ref("password")], "Passwords does not match"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      console.log("Submitting Register with values:", values);
+
+      try {
+        submitHandler(values);
+      } catch (error) {
+        console.error("Error submitting review:", error);
+      }
+    },
+  });
+
+  const submitHandler = () => {
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
     } else {
@@ -77,10 +106,14 @@ const NewPassword = () => {
           <h1 className="text-2xl font-bold sm:text-3xl text-black">New Password</h1>
         </div>
 
-        <form onSubmit={submitHandler} className="mx-auto mb-0 mt-8 max-w-md space-y-4">
+        <form onSubmit={formik.handleSubmit} className="mx-auto mb-0 mt-8 max-w-md space-y-4">
           <div>
             <label htmlFor="password_field" className="text-mg text-black pl-2">
-              Password
+              Password  {formik.errors.password && formik.touched.password && (
+                <span className="text-red-500 text-sm ml-3">
+                  {formik.errors.password}
+                </span>
+              )}
             </label>
 
             <div className="relative">
@@ -88,9 +121,13 @@ const NewPassword = () => {
                 type={showPassword ? "text" : "password"}
                 id="password_field"
                 className="form-control w-full rounded-lg border-2 text-black border-black p-4 text-sm shadow-sm bg-white"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formik.values.password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  formik.setFieldValue("password", e.target.value);
+                }}
               />
+             
 
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4" onClick={toggleShowPassword}>
                 {showPassword ? (
@@ -142,7 +179,11 @@ const NewPassword = () => {
 
           <div>
             <label htmlFor="confirm_password_field" className="text-mg text-black pl-2">
-              Confirm Password
+              Confirm Password {formik.errors.confirmPassword && formik.touched.confirmPassword && (
+                <span className="text-red-500 text-sm ml-3">
+                  {formik.errors.confirmPassword}
+                </span>
+              )}
             </label>
 
             <div className="relative">
@@ -150,8 +191,11 @@ const NewPassword = () => {
                 type={showPassword ? "text" : "password"}
                 id="confirm_password_field"
                 className="form-control w-full rounded-lg border-2 text-black border-black p-4 text-sm shadow-sm bg-white"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={formik.values.confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  formik.setFieldValue("confirmPassword", e.target.value);
+                }}
               />
 
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4" onClick={toggleShowPassword}>

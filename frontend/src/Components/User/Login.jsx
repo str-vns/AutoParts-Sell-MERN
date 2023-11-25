@@ -11,13 +11,7 @@ import GoogleLogin from "react-google-login";
 import FacebookLogin from "react-facebook-login";
 
 const Login = () => {
-  const initialState = {
-    email: "",
-    password: "",
-    err: "",
-    success: "",
-  };
-
+  
   const [user, setUser] = useState(initialState);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
